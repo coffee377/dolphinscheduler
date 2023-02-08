@@ -170,54 +170,84 @@ export function useForm(id?: number) {
 }
 
 export const datasourceType: IDataBaseOptionKeys = {
-  MYSQL: {
-    value: 'MYSQL',
-    label: 'MYSQL',
-    defaultPort: 3306
-  },
-  POSTGRESQL: {
-    value: 'POSTGRESQL',
-    label: 'POSTGRESQL',
-    defaultPort: 5432
-  },
-  HIVE: {
-    value: 'HIVE',
-    label: 'HIVE/IMPALA',
-    defaultPort: 10000
-  },
-  SPARK: {
-    value: 'SPARK',
-    label: 'SPARK',
-    defaultPort: 10015
-  },
-  CLICKHOUSE: {
-    value: 'CLICKHOUSE',
-    label: 'CLICKHOUSE',
-    defaultPort: 8123
-  },
   ORACLE: {
     value: 'ORACLE',
-    label: 'ORACLE',
+    label: 'Oracle',
     defaultPort: 1521
-  },
-  SQLSERVER: {
-    value: 'SQLSERVER',
-    label: 'SQLSERVER',
-    defaultPort: 1433
   },
   DB2: {
     value: 'DB2',
     label: 'DB2',
     defaultPort: 50000
   },
+  SQLSERVER: {
+    value: 'SQLSERVER',
+    label: 'SQL Server',
+    defaultPort: 1433
+  },
+  SYBASE: {
+    value: 'SYBASE',
+    label: 'Sybase',
+    defaultPort: 1433,
+    extension: true
+  },
+  INFO_MIX: {
+    value: 'INFO_MIX',
+    label: 'InfoMix',
+    defaultPort: 1433,
+    extension: true
+  },
+  MYSQL: {
+    value: 'MYSQL',
+    label: 'MySQL',
+    defaultPort: 3306
+  },
+  POSTGRESQL: {
+    value: 'POSTGRESQL',
+    label: 'PostgreSQL',
+    defaultPort: 5432
+  },
+  H2: {
+    value: 'H2',
+    label: 'H2',
+    defaultPort: 9092,
+    extension: true
+  },
+  KING_BASE: {
+    value: 'KING_BASE',
+    label: 'KingBase',
+    defaultPort: 54321,
+    extension: true
+  },
+  GBASE: {
+    value: 'GBASE',
+    label: 'GBase',
+    defaultPort: 8521,
+    extension: true
+  },
+  HIVE: {
+    value: 'HIVE',
+    label: 'Hive/Impala',
+    defaultPort: 10000
+  },
+  SPARK: {
+    value: 'SPARK',
+    label: 'Spark',
+    defaultPort: 10015
+  },
+  CLICKHOUSE: {
+    value: 'CLICKHOUSE',
+    label: 'ClickHouse',
+    defaultPort: 8123
+  },
   PRESTO: {
     value: 'PRESTO',
-    label: 'PRESTO',
+    label: 'Presto',
     defaultPort: 8080
   },
   REDSHIFT: {
     value: 'REDSHIFT',
-    label: 'REDSHIFT',
+    label: 'Amazon Redshift',
     defaultPort: 5439
   }
 }

@@ -78,7 +78,7 @@ const DetailModal = defineComponent({
 
     const onTest = async () => {
       await state.detailFormRef.validate()
-      testConnect()
+      await testConnect()
     }
 
     const onChangeType = changeType
@@ -147,10 +147,12 @@ const DetailModal = defineComponent({
                 rules={rules}
                 ref='detailFormRef'
                 require-mark-placement='left'
-                label-align='left'
+                label-align='right'
+                label-width={'auto'}
+                label-placement={'left'}
               >
                 <NFormItem
-                  label={t('datasource.datasource')}
+                  label={t('datasource.datasource_type')}
                   path='type'
                   show-require-mark
                 >
