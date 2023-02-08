@@ -26,6 +26,11 @@ type IDataBase =
   | 'DB2'
   | 'PRESTO'
   | 'REDSHIFT'
+  | 'SYBASE'
+  | 'INFO_MIX'
+  | 'H2'
+  | 'KING_BASE'
+  | 'GBASE'
 
 interface IDataSource {
   id?: number

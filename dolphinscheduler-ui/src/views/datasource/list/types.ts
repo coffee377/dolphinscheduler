@@ -31,6 +31,7 @@ interface IDataBaseOption extends SelectBaseOption {
   value: string
   defaultPort: number
   previousPort?: number
+  extension?: boolean
 }
 
 type IDataBaseOptionKeys = {

@@ -25,7 +25,7 @@ const components: { [key: string]: Component } = utils.mapping(modules)
 export default {
   path: '/datasource',
   name: 'datasource',
-  meta: { title: '数据源中心' },
+  meta: { title: '数据源管理' },
   component: () => import('@/layouts/content'),
   children: [
     {
@@ -33,7 +33,7 @@ export default {
       name: 'datasource-list',
       component: components['datasource-list'],
       meta: {
-        title: '数据源中心',
+        title: '数据源管理',
         activeMenu: 'datasource',
         showSide: false,
         auth: []
