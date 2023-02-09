@@ -142,12 +142,6 @@ const K8sNamespaceModal = defineComponent({
                     v-model={[this.model.k8s, 'value']}
                   />
                 </NFormItem>
-                <NFormItem label={t('security.k8s_namespace.tag')} path='tag'>
-                  <NInput
-                    placeholder={t('security.k8s_namespace.tag_tips')}
-                    v-model={[this.model.tag, 'value']}
-                  />
-                </NFormItem>
                 <NFormItem
                   label={t('security.k8s_namespace.limit_cpu')}
                   path='limitsCpu'

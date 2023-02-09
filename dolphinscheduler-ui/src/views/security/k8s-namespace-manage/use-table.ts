@@ -82,11 +82,6 @@ export function useTable() {
         ...COLUMN_WIDTH_CONFIG['userName']
       },
       {
-        title: t('security.k8s_namespace.tag'),
-        key: 'tag',
-        ...COLUMN_WIDTH_CONFIG['tag']
-      },
-      {
         title: t('security.k8s_namespace.limit_cpu'),
         key: 'limitsCpu',
         width: 140
