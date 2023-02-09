@@ -35,6 +35,7 @@ export default {
   delete_confirm: '删除？',
   cancel: '取消',
   create: '创建',
+  export: '导出',
   edit: '编辑',
   success: '成功',
   test_connect: '测试连接',

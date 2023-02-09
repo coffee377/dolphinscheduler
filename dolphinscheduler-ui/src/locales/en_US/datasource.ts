@@ -35,6 +35,7 @@ export default {
   delete_confirm: 'Delete?',
   cancel: 'Cancel',
   create: 'Create',
+  export: 'Export',
   edit: 'Edit',
   success: 'Success',
   test_connect: 'Test Connect',

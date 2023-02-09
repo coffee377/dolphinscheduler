@@ -33,6 +33,7 @@ import { useTable } from './use-table'
 import styles from './index.module.scss'
 import type { TableColumns } from './types'
 import { DefaultTableWidth } from '@/common/column-width-config'
+import { downloadByData } from '@/utils/downloadFile'
 
 const list = defineComponent({
   name: 'list',
@@ -47,14 +48,19 @@ const list = defineComponent({
     const { data, changePage, changePageSize, deleteRecord, updateList } =
       useTable()
 
-    const { getColumns } = useColumns((id: number, type: 'edit' | 'delete') => {
-      if (type === 'edit') {
-        showDetailModal.value = true
-        selectId.value = id
-      } else {
-        deleteRecord(id)
+    const { getColumns } = useColumns(
+      async (id: number, type: 'edit' | 'delete' | 'export', data) => {
+        if (type === 'edit') {
+          showDetailModal.value = true
+          selectId.value = id
+        } else if (type === 'delete') {
+          await deleteRecord(id)
+        } else {
+          const filename = data.name || String(new Date().getTime())
+          downloadByData(JSON.stringify(data), filename, 'application/json')
+        }
       }
-    })
+    )
 
     const onCreate = () => {
       selectId.value = null
