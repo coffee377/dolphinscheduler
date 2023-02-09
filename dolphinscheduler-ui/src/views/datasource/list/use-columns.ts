@@ -25,7 +25,7 @@ import {
   NSpace,
   NTooltip
 } from 'naive-ui'
-import { EditOutlined, DeleteOutlined } from '@vicons/antd'
+import { ExportOutlined, EditOutlined, DeleteOutlined } from '@vicons/antd'
 import JsonHighlight from './json-highlight'
 import ButtonLink from '@/components/button-link'
 import {
@@ -98,10 +98,28 @@ export function useColumns(onCallback: Function) {
       {
         title: t('datasource.operation'),
         key: 'operation',
-        ...COLUMN_WIDTH_CONFIG['operation'](2),
+        ...COLUMN_WIDTH_CONFIG['operation'](3),
         render: (rowData) => {
           return h(NSpace, null, {
             default: () => [
+              h(NTooltip, null, {
+                trigger: () =>
+                  h(
+                    NButton,
+                    {
+                      circle: true,
+                      type: 'info',
+                      size: 'small',
+                      onClick: () =>
+                        void onCallback(rowData.id, 'export', rowData)
+                    },
+                    {
+                      default: () =>
+                        h(NIcon, null, { default: () => h(ExportOutlined) })
+                    }
+                  ),
+                default: () => t('datasource.export')
+              }),
               h(NTooltip, null, {
                 trigger: () =>
                   h(
