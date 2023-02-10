@@ -16,6 +16,9 @@
  */
 
 export default {
+  kerberos: {
+    auth: 'Kerberos Authentication'
+  },
   tenant: {
     tenant_manage: 'Tenant Manage',
     create_tenant: 'Create Tenant',

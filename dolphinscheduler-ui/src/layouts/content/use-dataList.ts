@@ -15,38 +15,38 @@
  * limitations under the License.
  */
 
-import { reactive, h } from 'vue'
+import { h, reactive } from 'vue'
 import { NEllipsis, NIcon } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import {
-  HomeOutlined,
-  ProfileOutlined,
-  FolderOutlined,
+  ApartmentOutlined,
+  AppstoreOutlined,
+  BarsOutlined,
+  CloudServerOutlined,
+  ContainerOutlined,
+  ControlOutlined,
   DatabaseOutlined,
   DesktopOutlined,
-  SafetyCertificateOutlined,
-  UserOutlined,
-  LogoutOutlined,
-  FundProjectionScreenOutlined,
-  PartitionOutlined,
-  SettingOutlined,
-  FileSearchOutlined,
-  RobotOutlined,
-  AppstoreOutlined,
-  UsergroupAddOutlined,
-  UserAddOutlined,
-  WarningOutlined,
-  InfoCircleOutlined,
-  ControlOutlined,
-  SlackOutlined,
   EnvironmentOutlined,
-  KeyOutlined,
-  SafetyOutlined,
+  FileSearchOutlined,
+  FolderOutlined,
+  FundProjectionScreenOutlined,
   GroupOutlined,
-  ContainerOutlined,
-  ApartmentOutlined,
-  BarsOutlined,
-  CloudServerOutlined
+  HomeOutlined,
+  InfoCircleOutlined,
+  KeyOutlined,
+  LogoutOutlined,
+  PartitionOutlined,
+  ProfileOutlined,
+  RobotOutlined,
+  SafetyCertificateOutlined,
+  SafetyOutlined,
+  SettingOutlined,
+  SlackOutlined,
+  UserAddOutlined,
+  UsergroupAddOutlined,
+  UserOutlined,
+  WarningOutlined
 } from '@vicons/antd'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user/user'
@@ -255,6 +255,11 @@ export function useDataList() {
         children:
           (userStore.getUserInfo as UserInfoRes).userType === 'ADMIN_USER'
             ? [
+                {
+                  label: t('security.kerberos.auth'),
+                  key: '/security/kerberos-auth',
+                  icon: renderIcon(SafetyCertificateOutlined)
+                },
                 {
                   label: t('menu.tenant_manage'),
                   key: '/security/tenant-manage',

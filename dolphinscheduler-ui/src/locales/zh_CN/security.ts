@@ -16,6 +16,9 @@
  */
 
 export default {
+  kerberos: {
+    auth: 'Kerberos 认证'
+  },
   tenant: {
     tenant_manage: '租户管理',
     create_tenant: '创建租户',

@@ -30,6 +30,17 @@ export default {
   component: () => import('@/layouts/content'),
   children: [
     {
+      path: '/security/kerberos-auth',
+      name: 'kerberos-auth',
+      component: components['security-kerberos-auth'],
+      meta: {
+        title: 'Kerberos认证',
+        activeMenu: 'security',
+        showSide: true,
+        auth: ['ADMIN_USER']
+      }
+    },
+    {
       path: '/security/tenant-manage',
       name: 'tenant-manage',
       component: components['security-tenant-manage'],
