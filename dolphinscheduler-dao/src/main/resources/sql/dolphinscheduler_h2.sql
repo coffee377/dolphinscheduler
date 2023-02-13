@@ -363,6 +363,8 @@ CREATE TABLE t_ds_datasource
     UNIQUE KEY t_ds_datasource_name_un (name, type)
 );
 
+insert into t_ds_datasource (name,note,type,user_id,connection_params,create_time,update_time) values('测试','测试',0,1,'{"address":"jdbc:mysql://10.1.150.152:51900","database":"zhmz-intelligence-oa","jdbcUrl":"jdbc:mysql://10.1.150.152:51900/zhmz-intelligence-oa","user":"zhmz","password":"jqkj5350**)","other":"useSSL=false"}',now(),now());
+
 -- ----------------------------
 -- Records of t_ds_datasource
 -- ----------------------------
