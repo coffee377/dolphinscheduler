@@ -17,6 +17,10 @@
 
 package org.apache.dolphinscheduler.api.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.service.DataSourceService;
 import org.apache.dolphinscheduler.api.utils.PageInfo;
@@ -35,23 +39,6 @@ import org.apache.dolphinscheduler.spi.datasource.ConnectionParam;
 import org.apache.dolphinscheduler.spi.enums.DbType;
 import org.apache.dolphinscheduler.spi.params.base.ParamsOptions;
 import org.apache.dolphinscheduler.spi.utils.StringUtils;
-
-import org.apache.commons.collections4.CollectionUtils;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +46,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * data source service impl
@@ -457,24 +446,25 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
         Map<String, Object> result = new HashMap<>();
 
         DataSource dataSource = dataSourceMapper.selectById(datasourceId);
-
+    
         List<String> tableList = null;
         BaseConnectionParam connectionParam =
                 (BaseConnectionParam) DataSourceUtils.buildConnectionParams(
                         dataSource.getType(),
                         dataSource.getConnectionParams());
-
+    
         if (null == connectionParam) {
             putMsg(result, Status.DATASOURCE_CONNECT_FAILED);
             return result;
         }
-
+      
         Connection connection =
-                DataSourceUtils.getConnection(dataSource.getType(), connectionParam);
+                DataSourceUtils.getConnection(
+                        dataSource.getType(), connectionParam);
         ResultSet tables = null;
-
+    
         try {
-
+        
             if (null == connection) {
                 putMsg(result, Status.DATASOURCE_CONNECT_FAILED);
                 return result;
@@ -487,16 +477,13 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             } catch (SQLException e) {
                 logger.error("cant not get the schema : {}", e.getMessage(), e);
             }
-
-            tables = metaData.getTables(
-                    connectionParam.getDatabase(),
-                    getDbSchemaPattern(dataSource.getType(),schema,connectionParam),
+            tables = metaData.getTables(connectionParam.getDatabase(), getDbSchemaPattern(dataSource.getType(), schema, connectionParam),
                     "%", TABLE_TYPES);
             if (null == tables) {
                 putMsg(result, Status.GET_DATASOURCE_TABLES_ERROR);
                 return result;
             }
-
+        
             tableList = new ArrayList<>();
             while (tables.next()) {
                 String name = tables.getString(TABLE_NAME);
