@@ -66,7 +66,7 @@ public class SysConfigController extends BaseController {
     
     @ApiOperation(value = "获取详细信息", notes = "根据url的id来获取详细信息")
     @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "String", paramType = "path")
-    @GetMapping("/getDetails/id")
+    @GetMapping("/getDetails/{id}")
     public CommonResult<SysConfigVO> getDetails(@PathVariable("id") String id) {
         SysConfig sysConfig = sysConfigService.getById(id);
         return CommonResult.success(sysConfigMapStruct.toVO(sysConfig));
