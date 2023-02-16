@@ -40,7 +40,6 @@ public class DsDriverInfoController extends BaseController {
      * @return
      */
     @ApiOperation(value = "添加信息", notes = "添加信息")
-    @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "dsDriverInfoBO")
     @PostMapping
     public CommonResult insert(@Validated({ValidationGroups.Insert.class}) @RequestBody DsDriverInfoBO req) {
         dsDriverInfoService.insert(req);
@@ -55,11 +54,7 @@ public class DsDriverInfoController extends BaseController {
      */
     @PutMapping
     @ApiOperation(value = "修改信息", notes = "根据url的id来指定修改对象，并根据传过来的信息来修改详细信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "dsDriverInfoBO")
-    })
     public CommonResult updatedDriverInfo(@Validated({ValidationGroups.Update.class}) @RequestBody DsDriverInfoBO req) {
-        
         dsDriverInfoService.updatedDriverInfo(req);
         return CommonResult.success();
     }

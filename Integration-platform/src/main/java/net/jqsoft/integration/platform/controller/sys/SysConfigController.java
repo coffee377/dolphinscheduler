@@ -42,7 +42,6 @@ public class SysConfigController extends BaseController {
      * @return
      */
     @ApiOperation(value = "添加信息", notes = "添加信息")
-    @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "SysConfigBO")
     @PostMapping
     public CommonResult insert(@Validated({ValidationGroups.Insert.class}) @RequestBody SysConfigBO req) {
         sysConfigService.insert(req);
@@ -57,9 +56,6 @@ public class SysConfigController extends BaseController {
      */
     @PutMapping
     @ApiOperation(value = "修改信息", notes = "根据url的id来指定修改对象，并根据传过来的信息来修改详细信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "SysConfigBO")
-    })
     public CommonResult updateSysConfig(@Validated({ValidationGroups.Update.class}) @RequestBody SysConfigBO req) {
         
         sysConfigService.updateSysConfig(req);
@@ -115,4 +111,14 @@ public class SysConfigController extends BaseController {
         JsonPage<SysConfigVO> resultPage = new JsonPage<>(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), collect);
         return CommonResult.success(resultPage);
     }
+    /**
+     * 刷新参数缓存
+     *
+     * @return
+     */
+//    @GetMapping("/refresh")
+//    public CommonResult refreshConfig() {
+//        sysConfigService.refreshConfig();
+//        return CommonResult.success();
+//    }
 }

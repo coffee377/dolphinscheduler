@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class SysConfigBO implements Serializable {
     
     @NotBlank(message = "id不能为空", groups = {ValidationGroups.Update.class})
-    @ApiModelProperty("主键id")
+    @ApiModelProperty(value = "主键id",notes= "修改必传" )
     private String id;
     /**
      * 参数名称
