@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
+import net.jqsoft.integration.platform.common.JsonPage;
 import net.jqsoft.integration.platform.mapstruct.SysConfigMapStruct;
 import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
@@ -106,13 +107,12 @@ public class SysConfigController extends BaseController {
             @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
     })
     @GetMapping("/page")
-    public CommonResult<Page<SysConfigVO>> getConfigPage(SysConfigQueryBO req) {
+    public CommonResult<JsonPage<SysConfigVO>> getConfigPage(SysConfigQueryBO req) {
         QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNoneBlank(req.getParamName()),"param_lable", req.getParamName());
+        queryWrapper.like(StringUtils.isNoneBlank(req.getParamName()), "param_lable", req.getParamName());
         Page<SysConfig> pageList = sysConfigService.page(new Page<>(req.getPageNum(), req.getPageSize()), queryWrapper);
         List<SysConfigVO> collect = pageList.getRecords().stream().map(sysConfigMapStruct::toVO).collect(Collectors.toList());
-        Page<SysConfigVO> voPage = new Page<>(req.getPageNum(), req.getPageSize());
-        voPage.setRecords(collect);
-        return CommonResult.success(voPage);
+        JsonPage<SysConfigVO> resultPage = new JsonPage<>(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), collect);
+        return CommonResult.success(resultPage);
     }
 }
