@@ -9,7 +9,7 @@ import java.util.List;
 public interface DsDriverInfoService extends BaseService<DsDriverInfo> {
     void insert(DsDriverInfoBO req);
     
-    void updatedsDriverInfo(DsDriverInfoBO req);
+    void updatedDriverInfo(DsDriverInfoBO req);
     
     void deleteConfigById(String id);
     
