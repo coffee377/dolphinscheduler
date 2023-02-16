@@ -15,6 +15,7 @@ import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.SysConfigVO;
 import net.jqsoft.integration.platform.service.SysConfigService;
 import net.jqsoft.integration.platform.validate.ValidationGroups;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,7 +108,7 @@ public class SysConfigController extends BaseController {
     @GetMapping("/page")
     public CommonResult<Page<SysConfigVO>> getConfigPage(SysConfigQueryBO req) {
         QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("paramName", req.getParamName());
+        queryWrapper.like(StringUtils.isNoneBlank(req.getParamName()),"param_lable", req.getParamName());
         Page<SysConfig> pageList = sysConfigService.page(new Page<>(req.getPageNum(), req.getPageSize()), queryWrapper);
         List<SysConfigVO> collect = pageList.getRecords().stream().map(sysConfigMapStruct::toVO).collect(Collectors.toList());
         Page<SysConfigVO> voPage = new Page<>(req.getPageNum(), req.getPageSize());
