@@ -28,7 +28,7 @@ public class DsDriverInfoServiceImpl extends BaseServiceImpl<DsDriverInfoMapper,
     
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateSysConfig(DsDriverInfoBO req) {
+    public void updatedDriverInfo(DsDriverInfoBO req) {
         DsDriverInfo dsDriverInfo = dsDriverInfoMapStruct.toEntity(req);
         this.baseMapper.updateById(dsDriverInfo);
     }
