@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * @author gzp
  * @date 2022/9/16 14:25
  */
-public enum IsEnableEnum {
+public enum IsEnableEnum{
     NO(0, "未启用"),
     YES(1, "启用");
     
