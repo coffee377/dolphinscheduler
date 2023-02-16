@@ -3,6 +3,7 @@ package net.jqsoft.integration.platform.mapstruct;
 import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.SysConfigVO;
+import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
 /**
@@ -13,7 +14,7 @@ import org.mapstruct.Mapper;
  * @author yuwei
  * @since 2020-05-19
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",builder = @Builder(disableBuilder = true))
 public interface SysConfigMapStruct extends EntityMapper<SysConfigBO, SysConfig, SysConfigVO> {
 
 }
