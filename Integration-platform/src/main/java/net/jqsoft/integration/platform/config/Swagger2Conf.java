@@ -30,7 +30,7 @@ public class Swagger2Conf {
                 .version("1.0.0")//版本号
                 .build();
         return new Docket(DocumentationType.SWAGGER_2)//文档类型（swagger2）
-                .enable(true)//
+                .enable(enableSwagger)//
                 .apiInfo(apiInfo)//设置包含在json ResourceListing响应中的api元信息
                 .select()//启动用于api选择的构建器
                 .apis(RequestHandlerSelectors.basePackage("net.jqsoft.integration.platform.controller"))
