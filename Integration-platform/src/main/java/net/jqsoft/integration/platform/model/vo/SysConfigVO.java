@@ -3,6 +3,7 @@ package net.jqsoft.integration.platform.model.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import net.jqsoft.integration.platform.model.enums.IsEnableEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class SysConfigVO implements Serializable {
      * 是否启用(0:否 1:是)
      */
     @ApiModelProperty("是否启用(0:否 1:是)")
-    private Integer isEnable;
+    private IsEnableEnum isEnable;
     
     /**
      * 创建时间

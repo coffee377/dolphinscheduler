@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import net.jqsoft.integration.platform.model.enums.IsEnableEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class SysConfig  implements Serializable {
     /**
      * 是否启用(0:否 1:是)
      */
-    private Integer isEnable;
+    private IsEnableEnum isEnable;
     /**
      * 创建时间
      */
