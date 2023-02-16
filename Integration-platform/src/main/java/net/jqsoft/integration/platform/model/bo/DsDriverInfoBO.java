@@ -19,25 +19,25 @@ public class DsDriverInfoBO implements Serializable {
      * 标题
      */
     @NotBlank(message = "标题不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
-    @ApiModelProperty("标题")
+    @ApiModelProperty(value = "标题",required = true)
     private String title;
     /**
      * 驱动程序类名
      */
     @NotBlank(message = "驱动程序类名不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
-    @ApiModelProperty("驱动程序类名")
+    @ApiModelProperty(value = "驱动程序类名",required = true)
     private String driverName;
     /**
      * 驱动地址
      */
     @NotBlank(message = "驱动地址不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
-    @ApiModelProperty("驱动地址")
+    @ApiModelProperty(value = "驱动地址",required = true)
     private String driverUrl;
     /**
      * 数据库类型(如MYSQL,H2,SQLSERVER等)
      */
     @NotBlank(message = "数据库类型不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
-    @ApiModelProperty(" 数据库类型(如MYSQL,H2,SQLSERVER等)")
+    @ApiModelProperty(value = "数据库类型(如MYSQL,H2,SQLSERVER等)",required = true)
     private String dsType;
     
 }

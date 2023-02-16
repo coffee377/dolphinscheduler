@@ -57,7 +57,6 @@ public class SysConfigController extends BaseController {
     @PutMapping
     @ApiOperation(value = "修改信息", notes = "根据url的id来指定修改对象，并根据传过来的信息来修改详细信息")
     public CommonResult updateSysConfig(@Validated({ValidationGroups.Update.class}) @RequestBody SysConfigBO req) {
-        
         sysConfigService.updateSysConfig(req);
         return CommonResult.success();
     }
