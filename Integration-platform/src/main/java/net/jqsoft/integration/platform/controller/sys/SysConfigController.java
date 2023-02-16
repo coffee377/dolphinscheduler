@@ -2,6 +2,7 @@ package net.jqsoft.integration.platform.controller.sys;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RequestMapping("/sysConfig")
 @RestController
+@Api("系统参数管理")
 public class SysConfigController extends BaseController {
     
     @Resource
@@ -98,7 +100,7 @@ public class SysConfigController extends BaseController {
      * @param req
      * @return
      */
-    @ApiOperation(value = "分页查询", notes = "")
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
     })
