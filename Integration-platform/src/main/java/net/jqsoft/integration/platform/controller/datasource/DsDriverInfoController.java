@@ -58,7 +58,7 @@ public class DsDriverInfoController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "dsDriverInfoBO")
     })
-    public CommonResult updatedsDriverInfo(@Validated({ValidationGroups.Update.class}) @RequestBody DsDriverInfoBO req) {
+    public CommonResult updatedDriverInfo(@Validated({ValidationGroups.Update.class}) @RequestBody DsDriverInfoBO req) {
         
         dsDriverInfoService.updatedsDriverInfo(req);
         return CommonResult.success();
