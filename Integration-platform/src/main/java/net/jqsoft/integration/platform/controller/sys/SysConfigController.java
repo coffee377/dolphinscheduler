@@ -104,7 +104,7 @@ public class SysConfigController extends BaseController {
     @GetMapping("/page")
     public CommonResult<JsonPage<SysConfigVO>> getConfigPage(SysConfigQueryBO req) {
         QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNoneBlank(req.getParamName()), "param_lable", req.getParamName());
+        queryWrapper.like(StringUtils.isNoneBlank(req.getName()), "name", req.getName());
         Page<SysConfig> pageList = sysConfigService.page(new Page<>(req.getPageNum(), req.getPageSize()), queryWrapper);
         List<SysConfigVO> collect = pageList.getRecords().stream().map(sysConfigMapStruct::toVO).collect(Collectors.toList());
         JsonPage<SysConfigVO> resultPage = new JsonPage<>(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), collect);
