@@ -1,5 +1,6 @@
 package net.jqsoft.integration.platform.controller.datasource;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,9 +13,11 @@ import net.jqsoft.integration.platform.mapstruct.DsDriverInfoMapStruct;
 import net.jqsoft.integration.platform.model.bo.DsDriverInfoBO;
 import net.jqsoft.integration.platform.model.bo.DsDriverInfoQueryBO;
 import net.jqsoft.integration.platform.model.entity.DsDriverInfo;
+import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.DsDriverInfoVO;
 import net.jqsoft.integration.platform.service.DsDriverInfoService;
 import net.jqsoft.integration.platform.validate.ValidationGroups;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,6 +109,8 @@ public class DsDriverInfoController extends BaseController {
     })
     @GetMapping("/page")
     public CommonResult<JsonPage<DsDriverInfoVO>> getConfigPage(DsDriverInfoQueryBO req) {
+        QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNoneBlank(req.getDsType()), "ds_type", req.getDsType());
         Page<DsDriverInfo> pageList = dsDriverInfoService.page(new Page<>(req.getPageNum(), req.getPageSize()));
         List<DsDriverInfoVO> collect = pageList.getRecords().stream().map(dsDriverInfoMapStruct::toVO).collect(Collectors.toList());
         JsonPage<DsDriverInfoVO> resultPage = new JsonPage<>(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), collect);

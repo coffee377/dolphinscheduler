@@ -1,5 +1,6 @@
 package net.jqsoft.integration.platform.model.bo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import net.jqsoft.integration.platform.validate.ValidationGroups;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
+@ApiModel("数据源信息入参")
 public class DsDriverInfoBO implements Serializable {
     /**
      * 主键id

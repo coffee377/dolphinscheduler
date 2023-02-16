@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-@ApiModel("添加系统参数配置入参")
+@ApiModel("系统参数配置入参")
 public class SysConfigBO implements Serializable {
     
     @NotBlank(message = "id不能为空", groups = {ValidationGroups.Update.class})
