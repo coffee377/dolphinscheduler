@@ -7,4 +7,6 @@ import net.jqsoft.integration.platform.base.BaseQueryParams;
 public class IpSegmentQueryBO extends BaseQueryParams {
     
     private String ipSegment;
+
+    private String userId;
 }

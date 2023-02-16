@@ -11,6 +11,7 @@ import net.jqsoft.integration.platform.common.CommonResult;
 import net.jqsoft.integration.platform.mapstruct.IpSegmentMapStruct;
 import net.jqsoft.integration.platform.mapstruct.SysConfigMapStruct;
 import net.jqsoft.integration.platform.model.bo.IpSegmentBO;
+import net.jqsoft.integration.platform.model.bo.IpSegmentQueryBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
 import net.jqsoft.integration.platform.model.entity.IpSegment;
@@ -20,6 +21,7 @@ import net.jqsoft.integration.platform.model.vo.SysConfigVO;
 import net.jqsoft.integration.platform.service.IpSegmentService;
 import net.jqsoft.integration.platform.service.SysConfigService;
 import net.jqsoft.integration.platform.validate.ValidationGroups;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +65,7 @@ public class IpSegmentController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "req", value = "详细实体req", required = true, dataType = "IpSegmentBO")
     })
-    public CommonResult updateSysConfig(@Validated({ValidationGroups.Update.class}) @RequestBody IpSegmentBO req) {
+    public CommonResult updateIpSegment(@RequestBody IpSegmentBO req) {
 
         ipSegmentService.updateIpSegment(req);
         return CommonResult.success();
@@ -71,7 +73,7 @@ public class IpSegmentController extends BaseController {
     
     @ApiOperation(value = "获取详细信息", notes = "根据url的id来获取详细信息")
     @ApiImplicitParam(name = "id", value = "ID", required = true, dataType = "String", paramType = "path")
-    @GetMapping("/getDetails/id")
+    @GetMapping("/getDetails/{id}")
     public CommonResult<IpSegmentVO> getDetails(@PathVariable("id") String id) {
         IpSegment ipSegment = ipSegmentService.getById(id);
         return CommonResult.success(ipSegmentMapStruct.toVO(ipSegment));
@@ -110,9 +112,10 @@ public class IpSegmentController extends BaseController {
             @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
     })
     @GetMapping("/page")
-    public CommonResult<Page<IpSegmentVO>> getConfigPage(SysConfigQueryBO req) {
+    public CommonResult<Page<IpSegmentVO>> getConfigPage(IpSegmentQueryBO req) {
         QueryWrapper<IpSegment> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("paramName", req.getParamName());
+        queryWrapper.like(!StringUtils.isEmpty(req.getIpSegment()) ,"IP_SEGMENT", req.getIpSegment());
+        queryWrapper.eq(!StringUtils.isEmpty(req.getUserId()) ,"USER_ID", req.getUserId());
         Page<IpSegment> pageList = ipSegmentService.page(new Page<>(req.getPageNum(), req.getPageSize()), queryWrapper);
         List<IpSegmentVO> collect = pageList.getRecords().stream().map(ipSegmentMapStruct::toVO).collect(Collectors.toList());
         Page<IpSegmentVO> voPage = new Page<>(req.getPageNum(), req.getPageSize());

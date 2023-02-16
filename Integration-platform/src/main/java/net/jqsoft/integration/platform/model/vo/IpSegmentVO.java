@@ -35,12 +35,12 @@ public class IpSegmentVO  implements Serializable {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private Date createTime;
 
     /**
      * 修改时间
      */
-    private Date updatedTime;
+    private Date updateTime;
 
 }
     
