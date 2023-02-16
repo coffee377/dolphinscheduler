@@ -1,14 +1,11 @@
 package net.jqsoft.integration.platform.base;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public abstract class BaseEntity implements Serializable {
@@ -24,34 +21,32 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
+    private Date createdTime;
+    
+    
+    /**
+     * 创建人Id
+     */
+    private String createdId;
 
     /**
      * 创建人
      */
-    private String createBy;
+    private String createdUser;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
-
+    private Date updatedTime;
+    
+    /**
+     * 更新人Id
+     */
+    private String updatedId;
+    
     /**
      * 更新人
      */
-    @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
-    private String updateBy;
+    private String updatedUser;
 
-    /**
-     * 状态（0不启用，1启用）
-     */
-    @TableField(value = "status", fill = FieldFill.INSERT)
-    private String status;
-
-    /**
-     * 备注
-     */
-    @TableField(value = "remark")
-    private String remark;
 }

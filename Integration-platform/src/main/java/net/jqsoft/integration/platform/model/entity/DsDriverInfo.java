@@ -1,23 +1,16 @@
 package net.jqsoft.integration.platform.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import net.jqsoft.integration.platform.base.BaseEntity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @TableName("t_sys_config")
 @Accessors(chain = true)
-public class DsDriverInfo implements Serializable {
-    /**
-     * 主键id
-     */
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
+public class DsDriverInfo extends BaseEntity implements Serializable {
     /**
      * 标题
      */
@@ -34,30 +27,6 @@ public class DsDriverInfo implements Serializable {
      * 数据库类型(如MYSQL,H2,SQLSERVER等)
      */
     private String dsType;
-    /**
-     * 创建时间
-     */
-    private Date createdTime;
-    /**
-     * 创建人id
-     */
-    private String createdId;
-    /**
-     * 创建人姓名
-     */
-    private String createdUser;
-    /**
-     * 修改人id
-     */
-    private String updatedId;
-    /**
-     * 修改人姓名
-     */
-    private String updatedUser;
-    /**
-     * 修改时间
-     */
-    private Date updatedTime;
-    
+   
     
 }

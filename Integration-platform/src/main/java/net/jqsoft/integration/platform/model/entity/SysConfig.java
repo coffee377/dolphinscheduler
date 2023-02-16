@@ -1,24 +1,21 @@
 package net.jqsoft.integration.platform.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import net.jqsoft.integration.platform.base.BaseEntity;
 import net.jqsoft.integration.platform.model.enums.IsEnableEnum;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @TableName("t_sys_config")
 @Accessors(chain = true)
-public class SysConfig  implements Serializable {
+public class SysConfig extends BaseEntity implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
+    
     /**
      * 参数名称
      */
@@ -35,30 +32,6 @@ public class SysConfig  implements Serializable {
      * 是否启用(0:否 1:是)
      */
     private IsEnableEnum isEnable;
-    /**
-     * 创建时间
-     */
-    private Date createdTime;
-    /**
-     * 创建人id
-     */
-    private String createdId;
-    /**
-     * 创建人姓名
-     */
-    private String createdUser;
-    /**
-     * 修改人id
-     */
-    private String updatedId;
-    /**
-     * 修改人姓名
-     */
-    private String updatedUser;
-    /**
-     * 修改时间
-     */
-    private Date updatedTime;
-    
+  
     
 }
