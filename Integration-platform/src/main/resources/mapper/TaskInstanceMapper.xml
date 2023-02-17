@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.jqsoft.integration.platform.mapper.TaskInstanceMapper">
+
+
+
+
+
+
+
+    <select id="queryTaskInstanceListPaging" resultType="net.jqsoft.integration.platform.model.entity.TaskInstance">
+        select
+        instance.id as id , instance.name as name ,instance.taskType as taskType,instance.processInstanceId as processInstanceId , instance.taskCode ,
+        firstSubmitTime , submitTime , startTime , endTime , host , executePath , logPath , state ,
+        process.name as process_instance_name
+        from t_ds_task_instance instance
+        left join t_ds_task_definition_log define on define.code=instance.task_code and define.version=instance.task_definition_version
+        left join t_ds_process_instance process on process.id=instance.process_instance_id
+        where 1 =1
+        <if test="projectName != null and projectName != ''">
+            and define.name like concat('%', #{projectName}, '%')
+        </if>
+
+        <if test="taskInstanceName != null and taskInstanceName != ''">
+            and instance.name like concat('%', #{taskInstanceName}, '%')
+        </if>
+
+        order by instance.start_time desc
+    </select>
+
+</mapper>

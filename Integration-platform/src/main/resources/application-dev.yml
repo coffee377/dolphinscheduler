@@ -19,3 +19,7 @@ spring:
     validationQuery: SELECT 1 FROM DUAL
 swagger:
   enabled: true
+
+dataReporting:
+  token: 094899029e0111427adec6e27724dc7b
+  reportUrl:
