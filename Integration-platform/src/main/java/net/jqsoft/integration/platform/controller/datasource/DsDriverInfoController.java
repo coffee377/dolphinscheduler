@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
 import net.jqsoft.integration.platform.common.JsonPage;
+import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import net.jqsoft.integration.platform.mapstruct.DsDriverInfoMapStruct;
 import net.jqsoft.integration.platform.model.bo.DsDriverInfoBO;
 import net.jqsoft.integration.platform.model.bo.DsDriverInfoQueryBO;
@@ -16,7 +16,6 @@ import net.jqsoft.integration.platform.model.entity.DsDriverInfo;
 import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.DsDriverInfoVO;
 import net.jqsoft.integration.platform.service.DsDriverInfoService;
-import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -104,9 +103,6 @@ public class DsDriverInfoController extends BaseController {
      * @return
      */
     @ApiOperation(value = "分页查询", notes = "分页查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "dsDriverInfoQueryBO", value = "查询实体dsDriverInfoQueryBO", required = true, dataTypeClass = DsDriverInfoQueryBO.class)
-    })
     @GetMapping("/page")
     public CommonResult<JsonPage<DsDriverInfoVO>> getConfigPage(DsDriverInfoQueryBO req) {
         QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
