@@ -16,7 +16,7 @@ import net.jqsoft.integration.platform.model.entity.DsDriverInfo;
 import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.DsDriverInfoVO;
 import net.jqsoft.integration.platform.service.DsDriverInfoService;
-import net.jqsoft.integration.platform.validate.ValidationGroups;
+import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

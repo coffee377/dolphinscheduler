@@ -15,7 +15,7 @@ import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
 import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.SysConfigVO;
 import net.jqsoft.integration.platform.service.SysConfigService;
-import net.jqsoft.integration.platform.validate.ValidationGroups;
+import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

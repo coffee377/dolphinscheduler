@@ -19,13 +19,14 @@ logging:
     path: ${APP_LOG_PATH:/data/integration/logs/}
 mybatis-plus:
   type-aliases-package: net.jqsoft.integration.platform.model.*
+  type-enums-package: net.jqsoft.integration.platform.model.enums #枚举包地址
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     banner: false
     db-config:
-      id-type: auto
+      id-type: assign_id
   mapper-locations: classpath:mapper/*.xml
 swagger:
   enabled: false
