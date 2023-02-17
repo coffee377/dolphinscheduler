@@ -41,6 +41,52 @@ export default {
       }
     },
     {
+      path: '/security/log/task',
+      name: 'task-log',
+      // component: components['monitor-statistics-audit-log'],
+      component: components['security-log-task'],
+      meta: {
+        title: '任务日志',
+        activeMenu: 'security',
+        showSide: true,
+        auth: ['ADMIN_USER']
+      }
+    },
+    {
+      path: '/security/log/audit',
+      name: 'audit-log',
+      // component: components['monitor-statistics-audit-log'],
+      component: components['security-log-audit'],
+      meta: {
+        title: '审计日志',
+        activeMenu: 'security',
+        showSide: true,
+        auth: ['ADMIN_USER']
+      }
+    },
+    {
+      path: '/security/whitelist',
+      name: 'whitelist',
+      component: components['security-whitelist-manage'],
+      meta: {
+        title: '白名单管理',
+        activeMenu: 'security',
+        showSide: true,
+        auth: ['ADMIN_USER']
+      }
+    },
+    {
+      path: '/security/sys-config',
+      name: 'sys-config',
+      component: components['security-system-config-manage'],
+      meta: {
+        title: '系统参数管理',
+        activeMenu: 'security',
+        showSide: true,
+        auth: ['ADMIN_USER']
+      }
+    },
+    {
       path: '/security/tenant-manage',
       name: 'tenant-manage',
       component: components['security-tenant-manage'],
