@@ -17,8 +17,8 @@
 
 export default {
   task_state_statistics: '任务状态统计',
-  process_state_statistics: '流程状态统计',
-  process_definition_statistics: '流程定义统计',
+  process_state_statistics: '作业状态统计',
+  process_definition_statistics: '作业定义统计',
   number: '数量',
   state: '状态',
   submitted_success: '提交成功',
