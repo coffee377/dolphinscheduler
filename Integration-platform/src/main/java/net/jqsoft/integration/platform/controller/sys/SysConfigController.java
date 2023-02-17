@@ -4,18 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
 import net.jqsoft.integration.platform.common.JsonPage;
+import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import net.jqsoft.integration.platform.mapstruct.SysConfigMapStruct;
 import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
 import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.SysConfigVO;
 import net.jqsoft.integration.platform.service.SysConfigService;
-import net.jqsoft.integration.platform.common.validate.ValidationGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -98,9 +97,6 @@ public class SysConfigController extends BaseController {
      * @return
      */
     @ApiOperation(value = "分页查询", notes = "分页查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
-    })
     @GetMapping("/page")
     public CommonResult<JsonPage<SysConfigVO>> getConfigPage(SysConfigQueryBO req) {
         QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();
