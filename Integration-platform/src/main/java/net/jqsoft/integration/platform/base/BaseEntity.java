@@ -15,7 +15,6 @@ public abstract class BaseEntity implements Serializable {
 	/**
      * 主键
      */
-	@TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     /**

@@ -1,11 +1,8 @@
 package net.jqsoft.integration.platform.mapstruct;
 
 import net.jqsoft.integration.platform.model.bo.IpSegmentBO;
-import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.entity.IpSegment;
-import net.jqsoft.integration.platform.model.entity.IpSegmentVO;
-import net.jqsoft.integration.platform.model.entity.SysConfig;
-import net.jqsoft.integration.platform.model.vo.SysConfigVO;
+import net.jqsoft.integration.platform.model.vo.IpSegmentVO;
 import org.mapstruct.Mapper;
 
 /**

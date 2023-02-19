@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>net.jqsoft</groupId>
-    <artifactId>integration-platform</artifactId>
+    <artifactId>Integration-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>integration-platform</name>
-    <description>integration-platform</description>
+    <name>Integration-platform</name>
+    <description>Integration-platform</description>
     <properties>
         <java.version>8</java.version>
     </properties>
@@ -117,6 +117,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+      <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
         </dependency>
     </dependencies>
 
