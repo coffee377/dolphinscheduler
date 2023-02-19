@@ -130,7 +130,7 @@ Create a database environment variables.
   {{- if .Values.postgresql.enabled }}
   value: jdbc:postgresql://{{ template "dolphinscheduler.postgresql.fullname" . }}:5432/{{ .Values.postgresql.postgresqlDatabase }}?characterEncoding=utf8
   {{- else }}
-  value: jdbc:{{ .Values.externalDatabase.type }}://{{ .Values.externalDatabase.host }}:{{ .Values.externalDatabase.port }}/{{ .Values.externalDatabase.database }}?{{ .Values.externalDatabase.params }}
+  value: jdbc:{{ .Values.externalDatabase.type }}://{{ template "dolphinscheduler.mysql.host" . }}:{{ .Values.externalDatabase.port }}/{{ .Values.externalDatabase.database }}?{{ .Values.externalDatabase.params }}
   {{- end }}
 - name: SPRING_DATASOURCE_USERNAME
   {{- if .Values.postgresql.enabled }}
@@ -160,7 +160,7 @@ Wait for database to be ready.
 {{- if .Values.postgresql.enabled }}
   command: ['sh', '-xc', 'for i in $(seq 1 180); do nc -z -w3 {{ template "dolphinscheduler.postgresql.fullname" . }} 5432 && exit 0 || sleep 5; done; exit 1']
 {{- else }}
-  command: ['sh', '-xc', 'for i in $(seq 1 180); do nc -z -w3 {{ .Values.externalDatabase.host }} {{ .Values.externalDatabase.port }} && exit 0 || sleep 5; done; exit 1']
+  command: ['sh', '-xc', 'for i in $(seq 1 180); do nc -z -w3 {{ template "dolphinscheduler.mysql.fullname" .}} {{ .Values.externalDatabase.port }} && exit 0 || sleep 5; done; exit 1']
 {{- end }}
 {{- end -}}
 
@@ -235,4 +235,23 @@ Create a fsFileResourcePersistence volumeMount.
 - mountPath: {{ default "/dolphinscheduler" .Values.common.configmap.RESOURCE_UPLOAD_PATH | quote }}
   name: {{ include "dolphinscheduler.fullname" . }}-fs-file
 {{- end -}}
+{{- end -}}
+
+
+{{/*
+Create a default fully qualified mysql name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "dolphinscheduler.mysql.fullname" -}}
+{{- $name := default "mysql" .Values.mysql.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "dolphinscheduler.mysql.host" -}}
+{{- $name := default "mysql" .Values.mysql.nameOverride -}}
+{{ if and .Values.externalDatabase.host .Values.mysql.enabled }}
+{{- .Values.externalDatabase.host -}}
+{{ else }}
+{{- printf "%s-%s.%s" .Release.Name $name .Release.Namespace -}}
+{{ end }}
 {{- end -}}
