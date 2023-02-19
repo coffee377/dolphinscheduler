@@ -1,4 +1,4 @@
-package net.jqsoft.integration.platform.validate;
+package net.jqsoft.integration.platform.common.validate;
 
 public class ValidationGroups {
 

@@ -261,6 +261,31 @@ export function useDataList() {
                   icon: renderIcon(SafetyCertificateOutlined)
                 },
                 {
+                  label: t('security.log.management'),
+                  key: '/security/log/task',
+                  icon: renderIcon(SafetyCertificateOutlined),
+                  children: [
+                    {
+                      label: t('security.log.task'),
+                      key: '/security/log/task'
+                    },
+                    {
+                      label: t('security.log.audit'),
+                      key: '/security/log/audit'
+                    }
+                  ]
+                },
+                {
+                  label: t('security.whitelist.management'),
+                  key: '/security/whitelist',
+                  icon: renderIcon(SafetyCertificateOutlined)
+                },
+                {
+                  label: t('security.sys_config.management'),
+                  key: '/security/sys-config',
+                  icon: renderIcon(SafetyCertificateOutlined)
+                },
+                {
                   label: t('menu.tenant_manage'),
                   key: '/security/tenant-manage',
                   icon: renderIcon(UsergroupAddOutlined)

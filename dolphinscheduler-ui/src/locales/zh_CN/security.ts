@@ -264,5 +264,16 @@ export default {
     edit: '编辑',
     delete: '删除',
     delete_confirm: '确定删除吗?'
+  },
+  log: {
+    management: '日志管理',
+    task: '任务日志',
+    audit: '审计日志'
+  },
+  whitelist: {
+    management: '白名单管理'
+  },
+  sys_config: {
+    management: '系统参数管理'
   }
 }

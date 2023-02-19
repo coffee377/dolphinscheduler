@@ -1,16 +1,5 @@
-logging:
-  file:
-    path: D:\data\integration-platform
-mybatis-plus:
-  type-aliases-package: net.jqsoft.integration.platform.model.*
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    banner: false
-    db-config:
-      id-type: assign_id
-  mapper-locations: classpath:mapper/*.xml
+server:
+  port: ${APP_PORT:8080}
 spring:
   profiles:
     active: dev  #dev-为开发环境、test-为测试环境、prod-为正式测试环境，上线时请切换,切记！！！
@@ -20,6 +9,24 @@ spring:
     multipart: # 附件大小限制
       max-file-size: 10MB
       max-request-size: 10MB
-server:
-  port: 8081
-
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+logging:
+  file:
+    path: ${APP_LOG_PATH:/data/integration/logs/}
+mybatis-plus:
+  type-aliases-package: net.jqsoft.integration.platform.model.*
+  type-enums-package: net.jqsoft.integration.platform.model.enums #枚举包地址
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: assign_id
+  mapper-locations: classpath:mapper/*.xml
+swagger:
+  enabled: false

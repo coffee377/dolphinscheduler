@@ -8,7 +8,7 @@ import net.jqsoft.integration.platform.base.BaseEntity;
 import java.io.Serializable;
 
 @Data
-@TableName("t_dip_ds_driver_info")
+@TableName("t_dip_driver_info")
 @Accessors(chain = true)
 public class DsDriverInfo extends BaseEntity implements Serializable {
     /**
