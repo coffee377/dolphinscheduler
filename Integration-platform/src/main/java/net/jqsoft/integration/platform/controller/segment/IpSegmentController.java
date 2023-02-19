@@ -12,17 +12,11 @@ import net.jqsoft.integration.platform.mapstruct.IpSegmentMapStruct;
 import net.jqsoft.integration.platform.mapstruct.SysConfigMapStruct;
 import net.jqsoft.integration.platform.model.bo.IpSegmentBO;
 import net.jqsoft.integration.platform.model.bo.IpSegmentQueryBO;
-import net.jqsoft.integration.platform.model.bo.SysConfigBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
 import net.jqsoft.integration.platform.model.entity.IpSegment;
-import net.jqsoft.integration.platform.model.entity.IpSegmentVO;
-import net.jqsoft.integration.platform.model.entity.SysConfig;
-import net.jqsoft.integration.platform.model.vo.SysConfigVO;
+import net.jqsoft.integration.platform.model.vo.IpSegmentVO;
 import net.jqsoft.integration.platform.service.IpSegmentService;
-import net.jqsoft.integration.platform.service.SysConfigService;
-import net.jqsoft.integration.platform.validate.ValidationGroups;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

@@ -1,7 +1,5 @@
-package net.jqsoft.integration.platform.model.entity;
+package net.jqsoft.integration.platform.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -14,7 +12,6 @@ public class IpSegmentVO  implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id",  type = IdType.AUTO)
     private String id;
     /**
      * IP地址

@@ -11,6 +11,10 @@ public class TaskInstanceQueryBO extends BaseQueryParams {
     
     @ApiModelProperty("项目名称")
     private String projectName;
-    @ApiModelProperty("实例名称")
+    @ApiModelProperty("任务实例名称")
     private String taskInstanceName;
+
+    @ApiModelProperty("工作流实例名称")
+    private String processInstanceName;
+
 }

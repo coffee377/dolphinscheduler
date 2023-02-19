@@ -36,7 +36,7 @@ public class TaskInstance implements Serializable {
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+
     private int id;
 
     /**

@@ -8,14 +8,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
-import net.jqsoft.integration.platform.mapstruct.TaskInstanceMapStruct;
-import net.jqsoft.integration.platform.model.bo.IpSegmentQueryBO;
-import net.jqsoft.integration.platform.model.bo.TaskInstanceBO;
 import net.jqsoft.integration.platform.model.bo.TaskInstanceQueryBO;
-import net.jqsoft.integration.platform.model.entity.IpSegment;
-import net.jqsoft.integration.platform.model.entity.IpSegmentVO;
 import net.jqsoft.integration.platform.model.vo.TaskInstanceVO;
 import net.jqsoft.integration.platform.service.TaskInstanceService;
+import net.jqsoft.integration.platform.util.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,12 +23,13 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@RequestMapping("/logger")
+@RequestMapping("/taskInstance")
 @RestController
-@Api("日志管理管理")
+@Api("任务实例管理")
 public class TaskInstanceController extends BaseController {
 
     @Resource
@@ -60,7 +57,7 @@ public class TaskInstanceController extends BaseController {
             @ApiImplicitParam(name = "taskInstanceQueryBO", value = "查询实体taskInstanceQueryBO", required = true, dataTypeClass = TaskInstanceQueryBO.class)
     })
     @GetMapping("/page")
-    public CommonResult<Page<TaskInstanceVO>> getConfigPage(TaskInstanceQueryBO req) {
+    public CommonResult<PageInfo<Map<String, Object>>> getConfigPage(TaskInstanceQueryBO req) {
 
         return CommonResult.success(taskInstanceService.queryListByPage(req));
     }

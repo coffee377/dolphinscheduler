@@ -7,11 +7,13 @@ import net.jqsoft.integration.platform.model.bo.TaskInstanceQueryBO;
 import net.jqsoft.integration.platform.model.entity.TaskInstance;
 import net.jqsoft.integration.platform.model.vo.TaskInstanceVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import net.jqsoft.integration.platform.util.PageInfo;
 
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskInstanceService extends BaseService<TaskInstance> {
 
-    Page<TaskInstanceVO> queryListByPage(TaskInstanceQueryBO req);
+    PageInfo<Map<String, Object>> queryListByPage(TaskInstanceQueryBO req);
 }

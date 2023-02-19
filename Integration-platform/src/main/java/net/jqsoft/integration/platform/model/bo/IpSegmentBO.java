@@ -3,7 +3,8 @@ package net.jqsoft.integration.platform.model.bo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import net.jqsoft.integration.platform.validate.ValidationGroups;
+import net.jqsoft.integration.platform.common.validate.ValidationGroups;
+
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

@@ -10,14 +10,13 @@ import net.jqsoft.integration.platform.model.bo.TaskInstanceQueryBO;
 import net.jqsoft.integration.platform.model.entity.TaskInstance;
 import net.jqsoft.integration.platform.model.vo.TaskInstanceVO;
 import net.jqsoft.integration.platform.service.TaskInstanceService;
+import net.jqsoft.integration.platform.util.CollectionUtils;
 import net.jqsoft.integration.platform.util.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,18 +33,24 @@ public class TaskInstanceServiceImpl extends BaseServiceImpl<TaskInstanceMapper,
 
 
     @Override
-    public Page<TaskInstanceVO> queryListByPage(TaskInstanceQueryBO req) {
-        QueryWrapper<TaskInstance> queryWrapper = new QueryWrapper<>();
+    public PageInfo<Map<String, Object>> queryListByPage(TaskInstanceQueryBO req) {
         Map<String, Object> params = new HashMap<>();
         params.put("projectName",req.getProjectName());
+        params.put("processInstanceName",req.getProcessInstanceName());
         params.put("taskInstanceName",req.getTaskInstanceName());
+
         Page<TaskInstance> page = new Page<>(req.getPageNum(), req.getPageSize());
         PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(req.getPageNum(), req.getPageSize());
         IPage<TaskInstance> taskInstanceIPage = taskInstanceMapper.queryTaskInstanceListPaging(
-                page, req.getProjectName(),req.getTaskInstanceName()
+                page, req.getProjectName(),req.getProcessInstanceName(),req.getTaskInstanceName()
         );
+        Set<String> exclusionSet = new HashSet<>();
+        exclusionSet.add("class");
+        exclusionSet.add("taskJson");
         List<TaskInstanceVO> collect = taskInstanceIPage.getRecords().stream().map(taskInstanceMapStruct::toVO).collect(Collectors.toList());
-        Page<TaskInstanceVO> voPage = new Page<>(req.getPageNum(), req.getPageSize());
-         return  voPage.setRecords(collect);
+        pageInfo.setTotal((int) taskInstanceIPage.getTotal());
+        pageInfo.setTotalList(CollectionUtils.getListByExclusion(taskInstanceIPage.getRecords(), exclusionSet));
+
+         return  pageInfo;
     }
 }

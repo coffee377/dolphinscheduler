@@ -14,7 +14,7 @@ public class IpSegment  implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+
     private String id;
     /**
      * IP地址
