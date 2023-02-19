@@ -13,7 +13,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-    url: jdbc:mysql://localhost:3306/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+  redis:
+    timeout: 6000ms
+    lettuce:
+      pool:
+        max-active: 1000
+        max-idle: 10
+        max-wait: -1
+        min-idle: 5
 logging:
   file:
     path: ${APP_LOG_PATH:/data/integration/logs/}
