@@ -7,7 +7,7 @@
     <id>bin</id>
     <!-- 打包后的文件格式,可以是zip,tar,tar.gz,tar.bz2,jar,war,dir -->
     <formats>
-        <format>dir</format>
+<!--        <format>dir</format>-->
         <format>tar.gz</format>
     </formats>
     <!-- 是否生成和项目名相同的根目录 -->
@@ -41,10 +41,10 @@
         </fileSet>
 
         <!-- 把项目的脚本文件，打包进 bin 目录 -->
-<!--        <fileSet>-->
-<!--            <directory>${basedir}/src/main/bin</directory>-->
-<!--            <outputDirectory>bin</outputDirectory>-->
-<!--        </fileSet>-->
+        <fileSet>
+            <directory>${basedir}/src/main/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+        </fileSet>
 
         <!-- 把项目自己编译出来的jar文件，打包进zip文件的根目录 -->
         <fileSet>

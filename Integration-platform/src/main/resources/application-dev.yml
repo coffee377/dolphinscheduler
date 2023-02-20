@@ -2,13 +2,13 @@ server:
   port: ${APP_PORT:8081}
 spring:
   redis:
-    host: 10.1.150.152
-    port: 11976
-    password: jqkj5350**)
+    host: 10.1.150.150
+    port: 47301
+    password: redis!@@&
     database: 8
   datasource:
-    url: jdbc:mysql://10.1.152.19:3306/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.1.150.150:39068/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: jqkj5350**)
+    password: root
 swagger:
   enabled: true

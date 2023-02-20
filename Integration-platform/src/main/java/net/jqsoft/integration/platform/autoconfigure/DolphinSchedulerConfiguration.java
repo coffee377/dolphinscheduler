@@ -1,4 +1,4 @@
-package net.jqsoft.integration.platform.autofigure;
+package net.jqsoft.integration.platform.autoconfigure;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

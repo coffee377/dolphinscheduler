@@ -1,4 +1,4 @@
-package net.jqsoft.integration.platform.autofigure;
+package net.jqsoft.integration.platform.autoconfigure;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
