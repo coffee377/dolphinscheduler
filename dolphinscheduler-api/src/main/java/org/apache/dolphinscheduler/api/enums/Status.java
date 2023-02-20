@@ -17,10 +17,10 @@
 
 package org.apache.dolphinscheduler.api.enums;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import java.util.Locale;
 import java.util.Optional;
-
-import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * status enum      // todo #4855 One category one interval
@@ -44,6 +44,7 @@ public enum Status {
     USER_NAME_PASSWD_ERROR(10013, "user name or password error", "用户名或密码错误"),
     LOGIN_SESSION_FAILED(10014, "create session failed!", "创建session失败"),
     DATASOURCE_EXIST(10015, "data source name already exists", "数据源名称已存在"),
+  
     DATASOURCE_CONNECT_FAILED(10016, "data source connection failed", "建立数据源连接失败"),
     TENANT_NOT_EXIST(10017, "tenant not exists", "租户不存在"),
     PROJECT_NOT_FOUND(10018, "project {0} not found ", "项目[{0}]不存在"),
@@ -217,6 +218,7 @@ public enum Status {
     PROJECT_NOT_EXIST(10190, "This project was not found. Please refresh page.", "该项目不存在,请刷新页面"),
     TASK_INSTANCE_HOST_IS_NULL(10191, "task instance host is null", "任务实例host为空"),
     QUERY_EXECUTING_WORKFLOW_ERROR(10192, "query executing workflow error", "查询运行的工作流实例错误"),
+    TABLE_INFO_ERROR(10193, "insert tableInfo error", "新增数据源表信息失败"),
 
     UDF_FUNCTION_NOT_EXIST(20001, "UDF function not found", "UDF函数不存在"),
     UDF_FUNCTION_EXISTS(20002, "UDF function already exists", "UDF函数已存在"),

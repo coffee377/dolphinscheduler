@@ -17,14 +17,14 @@
 
 package org.apache.dolphinscheduler.dao.entity;
 
-import org.apache.dolphinscheduler.spi.enums.DbType;
-
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.apache.dolphinscheduler.spi.enums.DbType;
+
+import java.util.Date;
+import java.util.List;
 
 @TableName("t_ds_datasource")
 public class DataSource {
@@ -44,6 +44,9 @@ public class DataSource {
      */
     @TableField(exist = false)
     private String userName;
+    
+    @TableField(exist = false)
+    private List<TableInfos> children;
 
     /**
      * data source name
@@ -188,5 +191,13 @@ public class DataSource {
         int result = id;
         result = 31 * result + name.hashCode();
         return result;
+    }
+    
+    public List<TableInfos> getChildren() {
+        return children;
+    }
+    
+    public void setChildren(List<TableInfos> children) {
+        this.children = children;
     }
 }
