@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>net.jqsoft</groupId>
-    <artifactId>Integration-platform</artifactId>
+    <artifactId>integration-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Integration-platform</name>
-    <description>Integration-platform</description>
+    <name>integration-platform</name>
+    <description>integration-platform</description>
     <properties>
         <java.version>8</java.version>
     </properties>
