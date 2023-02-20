@@ -12,7 +12,3 @@ spring:
     password: jqkj5350**)
 swagger:
   enabled: true
-
-dataReporting:
-  token: 094899029e0111427adec6e27724dc7b
-  reportUrl:

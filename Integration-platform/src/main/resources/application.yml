@@ -38,3 +38,12 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 swagger:
   enabled: false
+dolphinscheduler:
+  enabled: true
+  root-uri: dolphin-api.test:12345
+  token: 2f4179e57d582a9cffc593420523fa8c
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
