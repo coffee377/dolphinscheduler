@@ -27,7 +27,7 @@ const userStore = useUserStore()
 
 /**
  * @description Log and display errors
- * @param {Error} error Error object
+ * @param res
  */
 const handleError = (res: AxiosResponse<any, any>) => {
   // Print to console
@@ -41,8 +41,8 @@ const handleError = (res: AxiosResponse<any, any>) => {
 const baseRequestConfig: AxiosRequestConfig = {
   baseURL:
     import.meta.env.MODE === 'development'
-      ? '/dolphinscheduler'
-      : import.meta.env.VITE_APP_PROD_WEB_URL + '/dolphinscheduler',
+      ? '/api/dolphinscheduler'
+      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api',
   timeout: 15000,
   transformRequest: (params) => {
     if (_.isPlainObject(params)) {
@@ -57,6 +57,14 @@ const baseRequestConfig: AxiosRequestConfig = {
 }
 
 const service = axios.create(baseRequestConfig)
+// 自研接口调用实例
+const request = axios.create({
+  ...baseRequestConfig,
+  baseURL:
+    import.meta.env.MODE === 'development'
+      ? '/api'
+      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api'
+})
 
 const err = (err: AxiosError): Promise<AxiosError> => {
   if (err.response?.status === 401 || err.response?.status === 504) {
@@ -68,17 +76,20 @@ const err = (err: AxiosError): Promise<AxiosError> => {
   return Promise.reject(err)
 }
 
-service.interceptors.request.use((config: AxiosRequestConfig<any>) => {
+// 请求拦击
+const reqIntercept = (config: AxiosRequestConfig<any>) => {
   config.headers && (config.headers.sessionId = userStore.getSessionId)
   const language = cookies.get('language')
   config.headers = config.headers || {}
   if (language) config.headers.language = language
 
   return config
-}, err)
+}
+service.interceptors.request.use(reqIntercept, err)
+request.interceptors.request.use(reqIntercept, err)
 
-// The response to intercept
-service.interceptors.response.use((res: AxiosResponse) => {
+// 响应拦击
+const resIntercept = (res: AxiosResponse) => {
   // No code will be processed
   if (res.data.code === undefined) {
     return res.data
@@ -91,6 +102,9 @@ service.interceptors.response.use((res: AxiosResponse) => {
       handleError(res)
       throw new Error()
   }
-}, err)
+}
+// The response to intercept
+service.interceptors.response.use(resIntercept, err)
+request.interceptors.response.use(resIntercept, err)
 
-export { service as axios }
+export { service as axios, request }

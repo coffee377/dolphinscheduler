@@ -46,7 +46,7 @@ export default defineConfig({
     open: true,
     host: true,
     proxy: {
-      '/dolphinscheduler': {
+      '/api': {
         // target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
         target: 'http://platform-test.jqk8s.jqsoft.net/api',
         rewrite: (path) => path.replace(/^\/api/, ''),
