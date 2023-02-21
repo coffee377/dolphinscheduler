@@ -8,13 +8,16 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
+import net.jqsoft.integration.platform.common.JsonPage;
 import net.jqsoft.integration.platform.mapstruct.IpSegmentMapStruct;
 import net.jqsoft.integration.platform.mapstruct.SysConfigMapStruct;
 import net.jqsoft.integration.platform.model.bo.IpSegmentBO;
 import net.jqsoft.integration.platform.model.bo.IpSegmentQueryBO;
 import net.jqsoft.integration.platform.model.bo.SysConfigQueryBO;
 import net.jqsoft.integration.platform.model.entity.IpSegment;
+import net.jqsoft.integration.platform.model.entity.SysConfig;
 import net.jqsoft.integration.platform.model.vo.IpSegmentVO;
+import net.jqsoft.integration.platform.model.vo.SysConfigVO;
 import net.jqsoft.integration.platform.service.IpSegmentService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -106,14 +109,17 @@ public class IpSegmentController extends BaseController {
             @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
     })
     @GetMapping("/page")
-    public CommonResult<Page<IpSegmentVO>> getConfigPage(IpSegmentQueryBO req) {
+    public CommonResult<JsonPage<IpSegmentVO>> getConfigPage(IpSegmentQueryBO req) {
         QueryWrapper<IpSegment> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(!StringUtils.isEmpty(req.getIpSegment()) ,"IP_SEGMENT", req.getIpSegment());
         queryWrapper.eq(!StringUtils.isEmpty(req.getUserId()) ,"USER_ID", req.getUserId());
         Page<IpSegment> pageList = ipSegmentService.page(new Page<>(req.getPageNum(), req.getPageSize()), queryWrapper);
         List<IpSegmentVO> collect = pageList.getRecords().stream().map(ipSegmentMapStruct::toVO).collect(Collectors.toList());
-        Page<IpSegmentVO> voPage = new Page<>(req.getPageNum(), req.getPageSize());
-        voPage.setRecords(collect);
-        return CommonResult.success(voPage);
+        JsonPage<IpSegmentVO> resultPage = new JsonPage<>(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), collect);
+        return CommonResult.success(resultPage);
     }
+
+
+
+
 }
