@@ -264,5 +264,26 @@ export default {
     edit: 'Edit',
     delete: 'Delete',
     delete_confirm: 'Delete?'
+  },
+  sys_config: {
+    management: 'System Params Manage',
+    create: 'Create',
+    edit_params: 'Edit',
+    operation: 'Operation',
+    edit: 'Edit',
+    delete: 'Delete',
+    delete_confirm: 'Delete?',
+    index: '#',
+    parameter_name: 'Name',
+    parameter_key: 'Key',
+    parameter_value: 'Value',
+    state: 'State',
+    state_enabled: 'enabled',
+    state_disabled: 'disabled',
+    created_time: 'Create Time',
+    parameter_name_tips: 'Please enter name',
+    parameter_key_tips: 'Please enter key',
+    parameter_value_tips: 'Please enter value',
+    search_tips: 'Please enter keywords'
   }
 }

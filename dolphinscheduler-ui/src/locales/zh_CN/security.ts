@@ -274,6 +274,24 @@ export default {
     management: '白名单管理'
   },
   sys_config: {
-    management: '系统参数管理'
+    management: '系统参数管理',
+    create: '创建参数',
+    edit_params: '编辑参数',
+    operation: '操作',
+    edit: '编辑',
+    delete: '删除',
+    delete_confirm: '确定删除吗?',
+    index: '序号',
+    parameter_name: '参数名称',
+    parameter_key: '参数键名',
+    parameter_value: '参数键值',
+    state: '状态',
+    state_enabled: '启用',
+    state_disabled: '关闭',
+    created_time: '创建时间',
+    parameter_name_tips: '请输入参数名称',
+    parameter_key_tips: '请输入参数键名',
+    parameter_value_tips: '请输入参数键值',
+    search_tips: '请输入关键词'
   }
 }

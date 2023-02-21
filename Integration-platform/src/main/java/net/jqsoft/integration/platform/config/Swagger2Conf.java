@@ -19,10 +19,10 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @EnableOpenApi
 public class Swagger2Conf {
-    
+
     @Value("${swagger.enabled}")
     private boolean enableSwagger;
-    
+
     @Bean
     public Docket getUserDocket() {
         ApiInfo apiInfo = new ApiInfoBuilder().title("集成平台")//api标题
@@ -33,7 +33,7 @@ public class Swagger2Conf {
                 .enable(enableSwagger)//
                 .apiInfo(apiInfo)//设置包含在json ResourceListing响应中的api元信息
                 .select()//启动用于api选择的构建器
-                .apis(RequestHandlerSelectors.basePackage("net.jqsoft.integration.platform.controller"))
+                .apis(RequestHandlerSelectors.basePackage("net.jqsoft.integration.platform"))
                 //扫描接口的包
                 .paths(PathSelectors.any())//路径过滤器（扫描所有路径）
                 .build();
