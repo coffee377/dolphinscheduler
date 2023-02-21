@@ -15,24 +15,29 @@
  * limitations under the License.
  */
 
-.container {
-  width: 100%;
+export interface ListReq {
+  pageNum: number
+  pageSize: number
+  name?: string
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .table-card {
-    margin-top: 8px;
-
-    .pagination {
-      margin-top: 20px;
-    }
-  }
-
-  .pagination {
-    display: flex;
-    justify-content: center;
-  }
+export interface addReq {
+  id?: string
+  isEnable: string
+  name: string
+  paramLable: string
+  paramValue: string
+}
+export interface Record extends addReq {
+  createdTime: string
+}
+export interface ListRes {
+  data: Record[]
+  pageNum: number
+  pageSize: number
+  total: number
+}
+export interface ListResData {
+  data: ListRes
+  status: number
 }
