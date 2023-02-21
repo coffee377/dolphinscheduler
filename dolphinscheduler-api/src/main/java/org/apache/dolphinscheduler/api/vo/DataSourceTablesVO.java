@@ -27,4 +27,6 @@ public class DataSourceTablesVO implements Serializable {
     
     private String typeSchem;
     
+    private String dataSourceId;
+    
 }

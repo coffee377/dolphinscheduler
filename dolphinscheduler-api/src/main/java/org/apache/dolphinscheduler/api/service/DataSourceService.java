@@ -18,6 +18,7 @@
 package org.apache.dolphinscheduler.api.service;
 
 import org.apache.dolphinscheduler.api.utils.Result;
+import org.apache.dolphinscheduler.api.vo.DataSourceTableColumnVO;
 import org.apache.dolphinscheduler.api.vo.DataSourceTablesVO;
 import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.plugin.datasource.api.datasource.BaseDataSourceParamDTO;
@@ -146,7 +147,26 @@ public interface DataSourceService {
      */
     Map<String, Object> getTableColumns(Integer datasourceId,String tableName);
     
+    /**
+     * getTableInfos
+     * @param datasourceId 数据源id
+     * @return
+     */
     List<DataSourceTablesVO> getTableInfos(Integer datasourceId);
     
+    /**
+     * refreshTableInfo
+     * @param datasourceId 数据源id
+     */
     void refreshTableInfo(Integer datasourceId);
+    
+    /**
+     * getTableColumnInfos
+     * @param datasourceId 数据源id
+     * @param tableName 表名称
+     * @return
+     */
+    List<DataSourceTableColumnVO> getTableColumnInfos(Integer datasourceId, String tableName);
+    
+    Result queryColumnListPaging(String dataSourceId, String tableName, Integer pageNo, Integer pageSize);
 }

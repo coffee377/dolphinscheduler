@@ -23,7 +23,6 @@ import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.DataSourceService;
 import org.apache.dolphinscheduler.api.utils.Result;
-import org.apache.dolphinscheduler.api.vo.DataSourceTablesVO;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.utils.CommonUtils;
 import org.apache.dolphinscheduler.common.utils.ParameterUtils;
@@ -37,7 +36,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.apache.dolphinscheduler.api.enums.Status.*;
@@ -340,28 +338,40 @@ public class DataSourceController extends BaseController {
         return returnDataList(result);
     }
     
-    
-    @ApiOperation(value = "getTableInfos", notes = "GET_DATASOURCE_TABLES_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "datasourceId", value = "DATA_SOURCE_ID", required = true, dataType = "Int", example = "1")
-    })
-    @GetMapping(value = "/getTableInfos/{datasourceId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(GET_DATASOURCE_TABLES_ERROR)
-    public Result<List<DataSourceTablesVO>> getTableInfos(@PathVariable("datasourceId") Integer datasourceId) {
-        List<DataSourceTablesVO> data = dataSourceService.getTableInfos(datasourceId);
-        return Result.success(data);
-    }
-    
-    @ApiOperation(value = "getTableInfos", notes = "GET_DATASOURCE_TABLES_NOTES")
+    @ApiOperation(value = "refreshTableInfo", notes = "refreshTableInfo")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "datasourceId", value = "DATA_SOURCE_ID", required = true, dataType = "Int", example = "1")
     })
     @GetMapping(value = "/refreshTableInfo/{datasourceId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiException(GET_DATASOURCE_TABLES_ERROR)
-    public Result<List<DataSourceTablesVO>> refreshTableInfo(@PathVariable("datasourceId") Integer datasourceId) {
+    public Result refreshTableInfo(@PathVariable("datasourceId") Integer datasourceId) {
         dataSourceService.refreshTableInfo(datasourceId);
         return Result.success();
     }
+    
+    
+    @ApiOperation(value = "queryColumnListPaging", notes = "querycolumnlistpaging")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", dataType = "String"),
+            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", required = true, dataType = "Int", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", required = true, dataType = "Int", example = "20")
+    })
+    @GetMapping("/queryColumnListPaging")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_DATASOURCE_ERROR)
+    @AccessLogAnnotation(ignoreRequestArgs = "loginUser")
+    public Result queryColumnListPaging(
+            @RequestParam(value = "dataSourceId", required = false) String dataSourceId,
+            @RequestParam(value = "tableName", required = false) String tableName,
+            @RequestParam(value = "pageNo",defaultValue = "1") Integer pageNo,
+            @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
+        Result result = checkPageParams(pageNo, pageSize);
+        if (!result.checkResult()) {
+            return result;
+        }
+        return dataSourceService.queryColumnListPaging(dataSourceId, tableName, pageNo, pageSize);
+        
+    }
+    
 }

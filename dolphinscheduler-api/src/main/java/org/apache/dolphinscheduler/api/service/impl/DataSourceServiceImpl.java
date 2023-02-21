@@ -22,15 +22,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.dolphinscheduler.api.async.AsyncTask;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ServiceException;
+import org.apache.dolphinscheduler.api.service.ColumnInfoSerive;
 import org.apache.dolphinscheduler.api.service.DataSourceService;
 import org.apache.dolphinscheduler.api.service.TableInfosService;
 import org.apache.dolphinscheduler.api.utils.PageInfo;
 import org.apache.dolphinscheduler.api.utils.Result;
+import org.apache.dolphinscheduler.api.vo.DataSourceTableColumnVO;
 import org.apache.dolphinscheduler.api.vo.DataSourceTablesVO;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.utils.JSONUtils;
+import org.apache.dolphinscheduler.dao.entity.ColumnInfo;
 import org.apache.dolphinscheduler.dao.entity.DataSource;
 import org.apache.dolphinscheduler.dao.entity.TableInfos;
 import org.apache.dolphinscheduler.dao.entity.User;
@@ -74,6 +78,8 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
     @Autowired
     private DataSourceUserMapper datasourceUserMapper;
     
+    private static final String COLUMN_DEF = "COLUMN_DEF";
+    
     private static final String REMARKS = "REMARKS";
     
     private static final String TABLE = "TABLE";
@@ -90,6 +96,17 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
     @Resource
     private TableInfosService tableInfosService;
     private static final String COLUMN_NAME = "COLUMN_NAME";
+    private static final String COLUMN_SIZE = "COLUMN_SIZE";
+    private static final String DATA_TYPE = "DATA_TYPE";
+    private static final String DECIMAL_DIGITS = "DECIMAL_DIGITS";
+    private static final String IS_AUTOINCREMENT = "IS_AUTOINCREMENT";
+    private static final String IS_NULLABLE = "IS_NULLABLE";
+    private static final String COLUMN_REMARKS = "REMARKS";
+    private static final String COLUMN_TYPE_NAME = "TYPE_NAME";
+    @Resource
+    private AsyncTask asyncTask;
+    @Resource
+    private ColumnInfoSerive columnInfoSerive;
     
     /**
      * create data source
@@ -135,10 +152,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Create datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
-        List<DataSourceTablesVO> dataSourceTablesVOS = this.getTableInfos(dataSource.getId());
-        //初始化数据源表数据
-        //初始化数据源表数据
-        initTableInfos(dataSourceTablesVOS,dataSource.getId());
+        asyncTask.doInsert(dataSource.getId());
         return result;
     }
 
@@ -199,6 +213,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Update datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
+        asyncTask.doTask(id);
         return result;
     }
 
@@ -639,24 +654,23 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             releaseConnection(connection);
         }
         return result;
-        
+    
     }
     
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void refreshTableInfo(Integer datasourceId) {
+        //初始化数据源表数据和字段数据
+        initTableInfos(datasourceId);
+    }
+    
+    private void initTableInfos(Integer datasourceId) {
         QueryWrapper<TableInfos> deleteQuery = new QueryWrapper<TableInfos>();
         deleteQuery.eq("data_source_id", datasourceId);
         tableInfosService.remove(deleteQuery);
         List<DataSourceTablesVO> dataSourceTablesVOS = this.getTableInfos(datasourceId);
-        //初始化数据源表数据
-        initTableInfos(dataSourceTablesVOS,datasourceId);
-        
-       
-    }
-    
-    private void initTableInfos(List<DataSourceTablesVO> dataSourceTablesVOS, Integer datasourceId) {
         List<TableInfos> tableInfosList = new ArrayList<>();
+        List<String> tableNameList = dataSourceTablesVOS.stream().map(DataSourceTablesVO::getTableName).collect(Collectors.toList());
         for (DataSourceTablesVO tableInfo : dataSourceTablesVOS) {
             TableInfos tableInfos = new TableInfos();
             BeanUtils.copyProperties(tableInfo, tableInfos);
@@ -664,7 +678,100 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             tableInfosList.add(tableInfos);
         }
         tableInfosService.saveBatch(tableInfosList);
+        initTableColumnInfos(datasourceId, tableNameList);
     }
+    
+    private void initTableColumnInfos(Integer datasourceId, List<String> tableNameList) {
+        //删除
+        QueryWrapper<ColumnInfo> deleteColumnQuery = new QueryWrapper<ColumnInfo>();
+        deleteColumnQuery.eq("data_source_id", datasourceId);
+        deleteColumnQuery.in("table_name", tableNameList);
+        
+        columnInfoSerive.remove(deleteColumnQuery);
+        List<ColumnInfo> columnInfos = new ArrayList<ColumnInfo>();
+        List<DataSourceTableColumnVO> tableColumnInfos = this.getTableColumnInfos(datasourceId, String.join(","));
+        for (DataSourceTableColumnVO tableColumnInfo : tableColumnInfos) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            BeanUtils.copyProperties(tableColumnInfo, columnInfo);
+            columnInfos.add(columnInfo);
+        }
+        columnInfoSerive.saveBatch(columnInfos);
+    }
+    
+    @Override
+    public List<DataSourceTableColumnVO> getTableColumnInfos(Integer datasourceId, String tableName) {
+        List<DataSourceTableColumnVO> resultList = new ArrayList<DataSourceTableColumnVO>();
+        
+        DataSource dataSource = dataSourceMapper.selectById(datasourceId);
+        BaseConnectionParam connectionParam =
+                (BaseConnectionParam) DataSourceUtils.buildConnectionParams(
+                        dataSource.getType(),
+                        dataSource.getConnectionParams());
+        
+        if (null == connectionParam) {
+            throw new ServiceException(Status.DATASOURCE_CONNECT_FAILED.getCode(), Status.DATASOURCE_CONNECT_FAILED.getMsg());
+        }
+        
+        Connection connection =
+                DataSourceUtils.getConnection(dataSource.getType(), connectionParam);
+        ResultSet rs = null;
+        
+        try {
+            String database = connectionParam.getDatabase();
+            if (null == connection) {
+                return new ArrayList<>();
+            }
+            
+            DatabaseMetaData metaData = connection.getMetaData();
+            
+            if (dataSource.getType() == DbType.ORACLE) {
+                database = null;
+            }
+            String[] tableNameSplit = tableName.split(",");
+            for (String singeName : tableNameSplit) {
+                rs = metaData.getColumns(database, null, singeName, "%");
+                if (rs == null) {
+                    return new ArrayList<>();
+                }
+                while (rs.next()) {
+                    DataSourceTableColumnVO dataSourceTableColumnVO = new DataSourceTableColumnVO();
+                    dataSourceTableColumnVO.setColumnName(COLUMN_NAME);
+                    dataSourceTableColumnVO.setColumnSize(COLUMN_SIZE);
+                    dataSourceTableColumnVO.setDataType(DATA_TYPE);
+                    dataSourceTableColumnVO.setDecimalDigits(DECIMAL_DIGITS);
+                    dataSourceTableColumnVO.setIsAutoincrement(IS_AUTOINCREMENT);
+                    dataSourceTableColumnVO.setIsNullable(IS_NULLABLE);
+                    dataSourceTableColumnVO.setRemarks(COLUMN_REMARKS);
+                    dataSourceTableColumnVO.setColumnDef(COLUMN_DEF);
+                    dataSourceTableColumnVO.setTypeName(COLUMN_TYPE_NAME);
+                    resultList.add(dataSourceTableColumnVO);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.toString(), e);
+        } finally {
+            closeResult(rs);
+            releaseConnection(connection);
+        }
+        return resultList;
+    }
+    
+    @Override
+    public Result queryColumnListPaging(String dataSourceId, String tableName, Integer pageNo, Integer pageSize) {
+        Result result = new Result();
+        Page<ColumnInfo> page = new Page<>(pageNo, pageSize);
+        QueryWrapper<ColumnInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(dataSourceId != null, "data_source_id", dataSourceId);
+        queryWrapper.eq(StringUtils.isNotBlank(tableName), "table_name", tableName);
+        IPage<ColumnInfo> pageResult = columnInfoSerive.page(page, queryWrapper);
+        PageInfo<ColumnInfo> pageInfo = new PageInfo<>(pageNo, pageSize);
+        pageInfo.setTotal((int) pageResult.getTotal());
+        pageInfo.setTotalList(pageResult.getRecords());
+        result.setData(pageInfo);
+        putMsg(result, Status.SUCCESS);
+        return result;
+    }
+    
     
     private List<ParamsOptions> getParamsOptions(List<String> columnList) {
         List<ParamsOptions> options = null;

@@ -160,6 +160,10 @@ traffic:
     max-global-qps-rate: 300
     tenant-switch: false
     default-tenant-qps-rate: 10
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 
