@@ -27,7 +27,7 @@ import type { ListReq, ListResData } from '@/service/modules/system-config/type'
 import { useMessage } from 'naive-ui'
 import {
   deleteSystemParams,
-  batchDeleteSystem
+  systemParamsDetail
 } from '@/service/modules/system-config'
 import {
   COLUMN_WIDTH_CONFIG,
@@ -40,9 +40,9 @@ export function useTable() {
     columns: [],
     tableData: [],
     pageNum: ref(1),
-    pageSize: ref(3),
+    pageSize: ref(10),
     searchVal: ref(''),
-    totalPage: ref(1),
+    total: ref(1),
     showModalRef: ref(false),
     typeRef: ref<'create' | 'update' | 'view' | String>('create'),
     row: {},
@@ -196,9 +196,15 @@ export function useTable() {
   }
 
   const handleEdit = (row: any) => {
-    state.showModalRef = true
-    state.typeRef = 'update'
-    state.row = row
+    systemParamsDetail(row.id).then((res: any) => {
+      if (res.status == '200') {
+        state.row = res.data
+        state.showModalRef = true
+        state.typeRef = 'update'
+      } else {
+        message.error(res.msg)
+      }
+    })
   }
   const handleOpen = () => {
     state.showModalRef = true
@@ -231,7 +237,7 @@ export function useTable() {
               ...item
             }
           }) as any
-          state.totalPage = Math.ceil(res.data.total / state.pageSize)
+          state.total = res.data.total
           state.loadingRef = false
         }
       }),

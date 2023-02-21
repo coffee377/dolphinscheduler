@@ -266,7 +266,7 @@ export default {
     delete_confirm: 'Delete?'
   },
   sys_config: {
-    management: 'Management',
+    management: 'System Params Manage',
     create: 'Create',
     edit_params: 'Edit',
     operation: 'Operation',

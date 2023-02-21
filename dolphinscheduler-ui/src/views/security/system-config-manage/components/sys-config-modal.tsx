@@ -63,7 +63,7 @@ const SysConfigModal = defineComponent({
           variables.model.id = ''
           variables.model.paramLable = ''
           variables.model.paramValue = ''
-          variables.model.isEnable = '0'
+          variables.model.isEnable = '1'
           variables.model.name = ''
         } else {
           variables.model.id = props.row.id

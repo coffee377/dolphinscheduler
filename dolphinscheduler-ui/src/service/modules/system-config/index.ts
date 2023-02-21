@@ -61,3 +61,9 @@ export function updateSystemParams(data: addReq): any {
     }
   })
 }
+export function systemParamsDetail(id: string): any {
+  return axios({
+    url: `/platform/sysConfig/getDetails/${id}`,
+    method: 'get'
+  })
+}
