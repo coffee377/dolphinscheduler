@@ -31,6 +31,7 @@ import { useLogin } from './use-login'
 import { useLocalesStore } from '@/store/locales/locales'
 import { useThemeStore } from '@/store/theme/theme'
 import cookies from 'js-cookie'
+import Logo from '@/components/Logo'
 
 const login = defineComponent({
   name: 'login',
@@ -69,7 +70,7 @@ const login = defineComponent({
         </div>
         <div class={styles['login-model']}>
           <div class={styles.logo}>
-            <div class={styles['logo-img']} />
+            <Logo />
           </div>
           <div class={styles['form-model']}>
             <NForm rules={this.rules} ref='loginFormRef'>

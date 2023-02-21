@@ -19,7 +19,7 @@ import { defineComponent, PropType, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import styles from './index.module.scss'
 import { NMenu } from 'naive-ui'
-import Logo from '../logo'
+import Logo from '@/components/Logo'
 import Locales from '../locales'
 import Timezone from '../timezone'
 import User from '../user'
@@ -67,7 +67,7 @@ const Navbar = defineComponent({
   render() {
     return (
       <div class={styles.container}>
-        <Logo />
+        <Logo style={{ marginLeft: '1rem' }} />
         <div class={styles.nav}>
           <NMenu
             value={this.menuKey}
