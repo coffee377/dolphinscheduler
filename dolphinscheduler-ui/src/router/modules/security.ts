@@ -43,8 +43,8 @@ export default {
     {
       path: '/security/log/task',
       name: 'task-log',
-      // component: components['monitor-statistics-audit-log'],
-      component: components['security-log-task'],
+      component: components['projects-task-instance'],
+      // component: components['security-log-task'],
       meta: {
         title: '任务日志',
         activeMenu: 'security',
@@ -55,8 +55,8 @@ export default {
     {
       path: '/security/log/audit',
       name: 'audit-log',
-      // component: components['monitor-statistics-audit-log'],
-      component: components['security-log-audit'],
+      component: components['monitor-statistics-audit-log'],
+      // component: components['security-log-audit'],
       meta: {
         title: '审计日志',
         activeMenu: 'security',
