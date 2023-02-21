@@ -86,7 +86,7 @@ export function useModal(
   const submitWhiteModal = () => {
     createWhitelist(variables.model).then((res: any) => {
       if (res.status == '200') {
-        variables.model.ipType = 0
+        variables.model.ipType = 1
         variables.model.ipSegment = ''
         variables.model.userId = ''
         ctx.emit('confirmModal')

@@ -69,7 +69,12 @@ export function useTable() {
         title: t('security.whitelist.ipType'),
         key: 'ipType',
         render: (row: any) => {
-          return h('span', row.ipType == 0 ? 'IPv4' : 'IPv6')
+          return h(
+            'span',
+            row.ipType == 1
+              ? t('security.whitelist.ipType_address')
+              : t('security.whitelist.ipType_segment')
+          )
         },
         ...COLUMN_WIDTH_CONFIG['userName']
       },
@@ -209,7 +214,7 @@ export function useTable() {
     const { state: data } = useAsyncState(
       queryWhitelist(params).then((res: ListResData) => {
         if (res.status == 200) {
-          state.tableData = res.data.records.map((item) => {
+          state.tableData = res.data.data.map((item) => {
             item.createTime = format(
               parseTime(item.createTime),
               'yyyy-MM-dd HH:mm:ss'

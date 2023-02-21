@@ -56,7 +56,7 @@ const WhitelistModal = defineComponent({
         if (props.typeRef === 'create') {
           variables.model.id = ''
           variables.model.ipSegment = ''
-          variables.model.ipType = 0
+          variables.model.ipType = 1
           variables.model.userId = ''
         } else {
           variables.model.id = props.row.id
@@ -110,11 +110,11 @@ const WhitelistModal = defineComponent({
                 <NFormItem label={t('security.whitelist.ipType')} path='ipType'>
                   <NRadioGroup v-model:value={this.model.ipType}>
                     <NSpace>
-                      <NRadio value={0} class='radio-state-enable'>
-                        {this.t('security.whitelist.ipType_IPv4')}
+                      <NRadio value={1} class='radio-state-enable'>
+                        {this.t('security.whitelist.ipType_address')}
                       </NRadio>
-                      <NRadio value={1} class='radio-state-disable'>
-                        {this.t('security.whitelist.ipType_IPv6')}
+                      <NRadio value={2} class='radio-state-disable'>
+                        {this.t('security.whitelist.ipType_segment')}
                       </NRadio>
                     </NSpace>
                   </NRadioGroup>

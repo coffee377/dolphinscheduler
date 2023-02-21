@@ -11,8 +11,8 @@ import {
 import Card from '@/components/card'
 import { useI18n } from 'vue-i18n'
 import { SearchOutlined } from '@vicons/antd'
-import { useTable } from '../whitelist-manage/use-table'
-import WhitelistModal from './components/whitelist-modal'
+import { useTable } from './use-table'
+import WhitelistModal from '../whitelist-manage/components/whitelist-modal'
 import styles from './index.module.scss'
 const WhitelistManage = defineComponent({
   name: 'whitelist-manage',
@@ -93,7 +93,7 @@ const WhitelistManage = defineComponent({
             <NPagination
               v-model:page={this.pageNum}
               v-model:page-size={this.pageSize}
-              page-count={this.total}
+              item-count={this.total}
               show-size-picker
               page-sizes={[10, 30, 50]}
               show-quick-jumper

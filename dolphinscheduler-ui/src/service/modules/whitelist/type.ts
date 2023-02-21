@@ -15,7 +15,7 @@ export interface Record extends addReq {
   updateTime: string
 }
 export interface ListRes {
-  records: Record[]
+  data: Record[]
   size: number
   pages: number
   total: number
