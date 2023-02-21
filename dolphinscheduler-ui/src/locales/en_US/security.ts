@@ -285,5 +285,24 @@ export default {
     parameter_key_tips: 'Please enter key',
     parameter_value_tips: 'Please enter value',
     search_tips: 'Please enter keywords'
+  },
+  whitelist: {
+    management: 'Whitelist Manage',
+    ip: 'IP',
+    ip_tips: 'Please enter ip',
+    userId: 'userId',
+    userId_tips: 'Please enter userId',
+    ipType: 'IP Type',
+    ipType_IPv4: 'IPv4',
+    ipType_IPv6: 'IPv6',
+    create_time: 'Create Time',
+    update_time: 'Update Time',
+    create: 'Create',
+    edit: 'Edit',
+    delete: 'Delete',
+    delete_confirm: 'Delete?',
+    index: '#',
+    search_tips: 'Please enter keywords',
+    operation: 'Operation'
   }
 }

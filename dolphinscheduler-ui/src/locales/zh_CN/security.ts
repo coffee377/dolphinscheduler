@@ -271,7 +271,23 @@ export default {
     audit: '审计日志'
   },
   whitelist: {
-    management: '白名单管理'
+    management: '白名单管理',
+    ip: 'IP',
+    ip_tips: '请输入IP',
+    userId: '用户ID',
+    userId_tips: '请输入用户id',
+    ipType: 'IP类型',
+    ipType_IPv4: 'IPv4',
+    ipType_IPv6: 'IPv6',
+    create_time: '创建时间',
+    update_time: '更新时间',
+    create: '创建',
+    edit: '编辑',
+    delete: '删除',
+    delete_confirm: '确定删除吗?',
+    index: '序号',
+    search_tips: '请输入关键词',
+    operation: '操作'
   },
   sys_config: {
     management: '系统参数管理',
