@@ -19,7 +19,7 @@ public class AsyncConfig {
         executor.setMaxPoolSize(20);
         executor.setQueueCapacity(100);
         executor.setKeepAliveSeconds(30);
-        executor.setThreadNamePrefix("datax-async-service-");
+        executor.setThreadNamePrefix("data-async-service-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());

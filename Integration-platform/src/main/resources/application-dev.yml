@@ -7,7 +7,7 @@ spring:
     password: redis!@@&
     database: 8
   datasource:
-    url: jdbc:mysql://10.1.150.150:39068/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://10.1.150.150:14924/integration-platform?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: root
 swagger:
