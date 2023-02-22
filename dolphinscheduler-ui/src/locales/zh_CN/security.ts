@@ -268,7 +268,8 @@ export default {
   log: {
     management: '日志管理',
     task: '任务日志',
-    audit: '审计日志'
+    audit: '审计日志',
+    project_name: '项目名称'
   },
   whitelist: {
     management: '白名单管理',

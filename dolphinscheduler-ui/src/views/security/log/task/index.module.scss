@@ -15,36 +15,12 @@
  * limitations under the License.
  */
 
-import { axios } from '@/service/service'
-import { IdReq, LogReq } from './types'
-import {
-  ProjectCodeReq,
-  TaskListReq
-} from '@/service/modules/task-instances/types'
+.table-card {
+  margin-top: 8px;
 
-export function queryLog(params: LogReq): any {
-  return axios({
-    url: '/log/detail',
-    method: 'get',
-    params
-  })
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
 }
-
-export function downloadTaskLog(params: IdReq): any {
-  return axios({
-    url: '/log/download-log',
-    method: 'get',
-    params
-  })
-}
-
-// export function queryTaskListPaging(
-//   params: TaskListReq,
-//   projectCode: ProjectCodeReq
-// ): any {
-//   return axios({
-//     url: `/projects/${projectCode.projectCode}/task-instances`,
-//     method: 'get',
-//     params
-//   })
-// }

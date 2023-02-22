@@ -14,37 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ITaskState } from '@/common/types'
 
-import { axios } from '@/service/service'
-import { IdReq, LogReq } from './types'
-import {
-  ProjectCodeReq,
-  TaskListReq
-} from '@/service/modules/task-instances/types'
+export type { Router } from 'vue-router'
+export type { TaskInstancesRes } from '@/service/modules/task-instances/types'
 
-export function queryLog(params: LogReq): any {
-  return axios({
-    url: '/log/detail',
-    method: 'get',
-    params
-  })
+interface IRecord {
+  name: string
+  processInstanceName: string
+  executorName: string
+  taskType: string
+  state: ITaskState
+  submitTime: string
+  startTime: string
+  endTime: string
+  duration?: string
+  retryTimes: number
+  dryRun: number
+  host: string
 }
 
-export function downloadTaskLog(params: IdReq): any {
-  return axios({
-    url: '/log/download-log',
-    method: 'get',
-    params
-  })
-}
-
-// export function queryTaskListPaging(
-//   params: TaskListReq,
-//   projectCode: ProjectCodeReq
-// ): any {
-//   return axios({
-//     url: `/projects/${projectCode.projectCode}/task-instances`,
-//     method: 'get',
-//     params
-//   })
-// }
+export { ITaskState, IRecord }

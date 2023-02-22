@@ -43,8 +43,8 @@ export default {
     {
       path: '/security/log/task',
       name: 'task-log',
-      component: components['projects-task-instance'],
-      // component: components['security-log-task'],
+      // component: components['projects-task-instance'],
+      component: components['security-log-task'],
       meta: {
         title: '任务日志',
         activeMenu: 'security',

@@ -304,5 +304,11 @@ export default {
     index: '#',
     search_tips: 'Please enter keywords',
     operation: 'Operation'
+  },
+  log: {
+    management: 'Log Manage',
+    task: 'Task Log',
+    audit: 'Audit Log',
+    project_name: 'Project Name'
   }
 }
