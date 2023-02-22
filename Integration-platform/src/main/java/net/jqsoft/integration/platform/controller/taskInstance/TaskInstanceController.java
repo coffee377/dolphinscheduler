@@ -36,9 +36,6 @@ public class TaskInstanceController extends BaseController {
      * @return
      */
     @ApiOperation(value = "分页查询", notes = "分页查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskInstanceQueryBO", value = "查询实体taskInstanceQueryBO", required = true, dataTypeClass = TaskInstanceQueryBO.class)
-    })
     @GetMapping("/page")
     public CommonResult<PageInfo<Map<String, Object>>> getConfigPage(TaskInstanceQueryBO req) {
         return CommonResult.success(taskInstanceService.queryListByPage(req));
