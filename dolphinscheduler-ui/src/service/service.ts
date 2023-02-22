@@ -38,11 +38,11 @@ const handleError = (res: AxiosResponse<any, any>) => {
   window.$message.error(res.data.msg)
 }
 
+// 接口请求前缀
+const prefix = window['__APP_REQUEST_CONF__']?.prefix ?? '/api'
+
 const baseRequestConfig: AxiosRequestConfig = {
-  baseURL:
-    import.meta.env.MODE === 'development'
-      ? '/api/dolphinscheduler'
-      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api/dolphinscheduler',
+  baseURL: prefix + '/dolphinscheduler',
   timeout: 15000,
   transformRequest: (params) => {
     if (_.isPlainObject(params)) {
@@ -60,10 +60,7 @@ const service = axios.create(baseRequestConfig)
 // 自研接口调用实例
 const request = axios.create({
   ...baseRequestConfig,
-  baseURL:
-    import.meta.env.MODE === 'development'
-      ? '/api'
-      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api'
+  baseURL: prefix
 })
 
 const err = (err: AxiosError): Promise<AxiosError> => {

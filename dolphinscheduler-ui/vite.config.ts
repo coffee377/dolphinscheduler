@@ -21,10 +21,10 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import viteCompression from 'vite-plugin-compression'
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base:
-    process.env.NODE_ENV === 'production'
-      ? loadEnv('production', './').VITE_APP_BASE
+    process.env.NODE_ENV !== 'production'
+      ? loadEnv(mode, './').VITE_APP_BASE || ''
       : '/',
   plugins: [
     vue(),
@@ -56,4 +56,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))
