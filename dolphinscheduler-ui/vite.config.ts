@@ -23,8 +23,8 @@ import path from 'path'
 
 export default defineConfig({
   base:
-    process.env.NODE_ENV !== 'development'
-      ? import.meta.env.VITE_APP_PROD_WEB_URL
+    process.env.NODE_ENV === 'production'
+      ? loadEnv('production', './').VITE_APP_BASE
       : '/',
   plugins: [
     vue(),
