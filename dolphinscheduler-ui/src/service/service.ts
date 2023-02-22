@@ -42,7 +42,7 @@ const baseRequestConfig: AxiosRequestConfig = {
   baseURL:
     import.meta.env.MODE === 'development'
       ? '/api/dolphinscheduler'
-      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api',
+      : import.meta.env.VITE_APP_PROD_WEB_URL + '/api/dolphinscheduler',
   timeout: 15000,
   transformRequest: (params) => {
     if (_.isPlainObject(params)) {
