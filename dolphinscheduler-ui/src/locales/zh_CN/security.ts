@@ -17,7 +17,29 @@
 
 export default {
   kerberos: {
-    auth: 'Kerberos 认证'
+    auth: 'Kerberos 认证',
+    kdc: 'KDC信息',
+    kdc_account_manager: 'KDC Account Manager凭据',
+    port_config: '配置端口',
+    kdc_type: 'KDC类型',
+    kerberos_safe: 'Kerberos安全领域',
+    kdc_serve_host: 'KDC Serve主机',
+    kdc_admin_host: 'KDC Admin Serve Host',
+    domain_name: 'Domain Name(s)',
+    kerberos_encryption_type: 'Kerberos加密类型',
+    kerberos_life_cycle: 'Kerberos Principal最大可更新生命周期',
+    user_name: '用户名',
+    pwd: '密码',
+    data_node_port: 'DataNode收发器端口',
+    data_node_http_port: 'DataNode HTTP Web UI端口',
+    agree_tips: '需要重启集群以使更改生效',
+    agree: '是，我现在已经准备好重启集群',
+    restart: '立即重启',
+    day: '天',
+    week: '周',
+    month: '月',
+    hasRestart: '已重启',
+    please_agree: '请勾选同意框'
   },
   tenant: {
     tenant_manage: '租户管理',
