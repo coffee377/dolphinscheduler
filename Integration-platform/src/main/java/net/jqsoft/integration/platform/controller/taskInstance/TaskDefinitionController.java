@@ -17,6 +17,8 @@
 
 package net.jqsoft.integration.platform.controller.taskInstance;
 
+import cn.hutool.core.lang.hash.Hash;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import io.swagger.annotations.*;
@@ -26,18 +28,28 @@ import net.jqsoft.integration.platform.common.CommonResult;
 import net.jqsoft.integration.platform.model.entity.DataSource;
 import net.jqsoft.integration.platform.model.entity.DsDriverInfo;
 import net.jqsoft.integration.platform.model.entity.TaskDefinitionLog;
+import net.jqsoft.integration.platform.model.enums.ProcessExecutionTypeEnum;
+import net.jqsoft.integration.platform.model.enums.ReleaseState;
 import net.jqsoft.integration.platform.service.DataSourceService;
 import net.jqsoft.integration.platform.service.DsDriverInfoService;
+import net.jqsoft.integration.platform.service.TaskDefinitionService;
 import net.jqsoft.integration.platform.util.JSONUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.util.Assert;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplateHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -50,68 +62,104 @@ import java.util.Map;
 @RequestMapping("projects/{projectCode}/task-definition")
 public class TaskDefinitionController extends BaseController {
 
-  /*  @Autowired
-    private TaskDefinitionService taskDefinitionService;*/
+    @Resource
+    private RestTemplate dsClient;
 
     @Resource
-    private DataSourceService dataSourceService;
+    private TaskDefinitionService taskDefinitionService;
 
-    /**
-     * create single task definition that binds the workflow
-     *
-     * @param projectCode           project code
-     * @param processDefinitionCode process definition code
-     * @param taskDefinitionJsonObj task definition json object
-     * @param upstreamCodes         upstream task codes, sep comma
-     * @return create result code
-     */
-    @ApiOperation(value = "saveSingle", notes = "CREATE_SINGLE_TASK_DEFINITION_NOTES")
+
+    @ApiOperation(value = "createProcessDefinition", notes = "CREATE_PROCESS_DEFINITION_NOTES")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectCode", value = "PROJECT_CODE", required = true, type = "Long"),
-        @ApiImplicitParam(name = "processDefinitionCode", value = "PROCESS_DEFINITION_CODE", required = true, type = "processDefinitionCode"),
-        @ApiImplicitParam(name = "taskDefinitionJsonObj", value = "TASK_DEFINITION_JSON", required = true, type = "String"),
-        @ApiImplicitParam(name = "upstreamCodes", value = "UPSTREAM_CODES", required = false, type = "String")
+            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
+            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
+            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String")
     })
-    @PostMapping("/save-single")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResult createTaskBindsWorkFlow(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
-                                                @RequestParam(value = "processDefinitionCode", required = true) long processDefinitionCode,
-                                                @RequestParam(value = "taskDefinitionJsonObj", required = true) String taskDefinitionJsonObj,
-                                                @RequestParam(value = "fieldsMap", required = false) String fields,
-                                                @RequestParam(value = "upstreamCodes", required = false) String upstreamCodes) {
-        TaskDefinitionLog taskDefinition = JSONUtils.parseObject(taskDefinitionJsonObj, TaskDefinitionLog.class);
-        String  taskParams= taskDefinition.getTaskParams();
-        Map<String,Object> taskParamsMap =  JSONObject.parseObject(taskParams);
-        Map<String,Object> fieldsMap =  JSONObject.parseObject(fields);
-        createQueryAndResultSql(fieldsMap,taskParamsMap);
-        if (taskDefinition == null) {
-            log.error("taskDefinitionJsonObj is not valid json");
+    public CommonResult createProcessDefinition(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
+                                          @RequestParam(value = "name", required = true) String name,
+                                          @RequestParam(value = "description", required = false) String description,
+                                          @RequestParam(value = "globalParams", required = false, defaultValue = "[]") String globalParams,
+                                          @RequestParam(value = "locations", required = false) String locations,
+                                          @RequestParam(value = "timeout", required = false, defaultValue = "0") int timeout,
+                                          @RequestParam(value = "tenantCode", required = true) String tenantCode,
+                                          @RequestParam(value = "taskRelationJson", required = true) String taskRelationJson,
+                                          @RequestParam(value = "taskDefinitionJson", required = true) String taskDefinitionJson,
+                                          @RequestParam(value = "executionType", defaultValue = "PARALLEL") ProcessExecutionTypeEnum executionType) {
+        String dataxTaskDefinitionJson = taskDefinitionService.createQueryAndResultSql(taskDefinitionJson);
+        CommonResult result = taskDefinitionService.pushCreateTaskToDs( projectCode, name, description, globalParams,
+                locations, timeout, tenantCode, taskRelationJson, dataxTaskDefinitionJson,executionType);
 
 
-        }
         return CommonResult.success();
     }
 
-    private void createQueryAndResultSql(Map<String, Object> fieldsMap, Map<String, Object> taskParamsMap) {
-        StringBuilder querySql = new StringBuilder();
-        StringBuilder ressultSql = new StringBuilder();
-        Assert.notEmpty(fieldsMap ,"查询参数配置为空");
-        //获取数据库名称
+    /**
+     * update process definition
+     *
+     * @param projectCode project code
+     * @param name process definition name
+     * @param code process definition code
+     * @param description description
+     * @param globalParams globalParams
+     * @param locations locations for nodes
+     * @param timeout timeout
+     * @param tenantCode tenantCode
+     * @param taskRelationJson relation json for nodes
+     * @param taskDefinitionJson taskDefinitionJson
+     * @return update result code
+     */
+    @ApiOperation(value = "update", notes = "UPDATE_PROCESS_DEFINITION_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
+            @ApiImplicitParam(name = "code", value = "PROCESS_DEFINITION_CODE", required = true, dataType = "Long", example = "123456789"),
+            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
+            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String"),
+            @ApiImplicitParam(name = "releaseState", value = "RELEASE_PROCESS_DEFINITION_NOTES", required = false, dataType = "ReleaseState")
+    })
+    @PutMapping (value = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResult updateProcessDefinition(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
+                                          @RequestParam(value = "name", required = false) String name,
+                                          @PathVariable(value = "code", required = true) long code,
+                                          @RequestParam(value = "description", required = false) String description,
+                                          @RequestParam(value = "globalParams", required = false, defaultValue = "[]") String globalParams,
+                                          @RequestParam(value = "locations", required = false) String locations,
+                                          @RequestParam(value = "timeout", required = false, defaultValue = "0") int timeout,
+                                          @RequestParam(value = "tenantCode", required = true) String tenantCode,
+                                          @RequestParam(value = "taskRelationJson", required = true) String taskRelationJson,
+                                          @RequestParam(value = "taskDefinitionJson", required = true) String taskDefinitionJson,
+                                           @RequestParam(value = "fieldsMap", required = false) String fields,
+                                          @RequestParam(value = "executionType", defaultValue = "PARALLEL") ProcessExecutionTypeEnum executionType,
+                                          @RequestParam(value = "releaseState", required = false, defaultValue = "OFFLINE") ReleaseState releaseState) {
 
-        DataSource queryDataSource = dataSourceService.getById(Integer.valueOf(taskParamsMap.get("dataSource").toString()));
-        DataSource resultDataSource = dataSourceService.getById(Integer.valueOf(taskParamsMap.get("dataTarget").toString()));
-        querySql.append("select ");
-        ressultSql.append("select ");
-        fieldsMap.forEach((k,v)->{
-            querySql.append(k).append(",");
-            ressultSql.append(v).append(",");
-        });
-        System.out.println("querySql:"+querySql);
-        System.out.println("ressultSql:"+ressultSql);
-
-
-
+        String dataxTaskDefinitionJson = taskDefinitionService.createQueryAndResultSql(taskDefinitionJson);
+        CommonResult result = taskDefinitionService.pushTaskToDs(projectCode,code,locations,dataxTaskDefinitionJson,taskRelationJson,tenantCode,executionType,
+                description,globalParams,timeout,releaseState,name);
+        return CommonResult.success();
     }
+
+    /**
+     * query detail of process definition by code
+     *
+     * @param projectCode project code
+     * @param code process definition code
+     * @return process definition detail
+     */
+    @ApiOperation(value = "queryProcessDefinitionByCode", notes = "QUERY_PROCESS_DEFINITION_BY_CODE_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "PROCESS_DEFINITION_CODE", required = true, dataType = "Long", example = "123456789")
+    })
+    @GetMapping(value = "/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResult queryProcessDefinitionByCode(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
+                                               @PathVariable(value = "code", required = true) long code) {
+        Map<String, Object> result = taskDefinitionService.queryProcessDefinitionByCode(projectCode, code);
+        return CommonResult.success(result);
+    }
+
+
 
 
 }

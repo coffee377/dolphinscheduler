@@ -35,7 +35,9 @@ public class TaskDefinitionLog extends TaskDefinition {
     /**
      * operate time
      */
-    private Date operateTime;
+    private String operateTime;
+
+
 
     public TaskDefinitionLog() {
         super();
@@ -51,11 +53,11 @@ public class TaskDefinitionLog extends TaskDefinition {
         this.operator = operator;
     }
 
-    public Date getOperateTime() {
+    public String getOperateTime() {
         return operateTime;
     }
 
-    public void setOperateTime(Date operateTime) {
+    public void setOperateTime(String operateTime) {
         this.operateTime = operateTime;
     }
 

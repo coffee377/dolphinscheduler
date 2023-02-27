@@ -16,4 +16,11 @@ import java.util.Map;
 public interface TaskInstanceService extends BaseService<TaskInstance> {
 
     PageInfo<Map<String, Object>> queryListByPage(TaskInstanceQueryBO req);
+
+    /**
+     *根据Id查询任务实例
+     * @param id
+     * @return
+     */
+    TaskInstance queryById(String id);
 }

@@ -17,23 +17,33 @@
 
 package net.jqsoft.integration.platform.model.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.lettuce.core.models.command.CommandDetail;
-import javafx.beans.property.Property;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import javafx.scene.layout.Priority;
-import lombok.Data;
+import net.jqsoft.integration.platform.model.enums.Flag;
+import net.jqsoft.integration.platform.model.enums.TaskTimeoutStrategy;
 import net.jqsoft.integration.platform.model.enums.TimeoutFlag;
 import net.jqsoft.integration.platform.util.JSONUtils;
-
-
-import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * task definition
  */
-@Data
 @TableName("t_ds_task_definition")
 public class TaskDefinition {
 
@@ -100,7 +110,7 @@ public class TaskDefinition {
     /**
      * task is valid: yes/no
      */
-    private CommandDetail.Flag flag;
+    private Flag flag;
 
     /**
      * task priority
@@ -144,7 +154,11 @@ public class TaskDefinition {
      */
     private TimeoutFlag timeoutFlag;
 
-
+    /**
+     * timeout notify strategy
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private TaskTimeoutStrategy timeoutNotifyStrategy;
 
     /**
      * task warning time out. unit: minute
@@ -164,12 +178,12 @@ public class TaskDefinition {
     /**
      * create time
      */
-    private Date createTime;
+    private String createTime;
 
     /**
      * update time
      */
-    private Date updateTime;
+    private String updateTime;
 
     /**
      * modify user name
@@ -186,9 +200,326 @@ public class TaskDefinition {
      */
     private int taskGroupPriority;
 
+    public TaskDefinition() {
+    }
+
+    public TaskDefinition(long code, int version) {
+        this.code = code;
+        this.version = version;
+    }
+
+    public int getTaskGroupId() {
+        return taskGroupId;
+    }
+
+    public void setTaskGroupId(int taskGroupId) {
+        this.taskGroupId = taskGroupId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Flag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Flag flag) {
+        this.flag = flag;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getTaskParams() {
+        return taskParams;
+    }
+
+    public void setTaskParams(String taskParams) {
+        this.taskParams = taskParams;
+    }
+
+    public List<Property> getTaskParamList() {
+        JsonNode localParams = JSONUtils.parseObject(taskParams).findValue("localParams");
+        if (localParams != null) {
+            taskParamList = JSONUtils.toList(localParams.toString(), Property.class);
+        }
+
+        return taskParamList;
+    }
+
+    public void setTaskParamList(List<Property> taskParamList) {
+        this.taskParamList = taskParamList;
+    }
+
+    public void setTaskParamMap(Map<String, String> taskParamMap) {
+        this.taskParamMap = taskParamMap;
+    }
+
+    public Map<String, String> getTaskParamMap() {
+        if (taskParamMap == null && StringUtils.isNotEmpty(taskParams)) {
+            JsonNode localParams = JSONUtils.parseObject(taskParams).findValue("localParams");
+
+            //If a jsonNode is null, not only use !=null, but also it should use the isNull method to be estimated.
+            if (localParams != null && !localParams.isNull()) {
+                List<Property> propList = JSONUtils.toList(localParams.toString(), Property.class);
+
+                if (CollectionUtils.isNotEmpty(propList)) {
+                    taskParamMap = new HashMap<>();
+                    for (Property property : propList) {
+                        taskParamMap.put(property.getProp(), property.getValue());
+                    }
+                }
+            }
+        }
+        return taskParamMap;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getCode() {
+        return code;
+    }
+
+    public void setCode(long code) {
+        this.code = code;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public long getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(long projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public Priority getTaskPriority() {
+        return taskPriority;
+    }
+
+    public void setTaskPriority(Priority taskPriority) {
+        this.taskPriority = taskPriority;
+    }
+
+    public String getWorkerGroup() {
+        return workerGroup;
+    }
+
+    public void setWorkerGroup(String workerGroup) {
+        this.workerGroup = workerGroup;
+    }
+
+    public int getFailRetryTimes() {
+        return failRetryTimes;
+    }
+
+    public void setFailRetryTimes(int failRetryTimes) {
+        this.failRetryTimes = failRetryTimes;
+    }
+
+    public int getFailRetryInterval() {
+        return failRetryInterval;
+    }
+
+    public void setFailRetryInterval(int failRetryInterval) {
+        this.failRetryInterval = failRetryInterval;
+    }
+
+    public TaskTimeoutStrategy getTimeoutNotifyStrategy() {
+        return timeoutNotifyStrategy;
+    }
+
+    public void setTimeoutNotifyStrategy(TaskTimeoutStrategy timeoutNotifyStrategy) {
+        this.timeoutNotifyStrategy = timeoutNotifyStrategy;
+    }
+
+    public TimeoutFlag getTimeoutFlag() {
+        return timeoutFlag;
+    }
+
+    public void setTimeoutFlag(TimeoutFlag timeoutFlag) {
+        this.timeoutFlag = timeoutFlag;
+    }
+
+    public String getResourceIds() {
+        return resourceIds;
+    }
+
+    public void setResourceIds(String resourceIds) {
+        this.resourceIds = resourceIds;
+    }
+
+    public int getDelayTime() {
+        return delayTime;
+    }
+
+    public void setDelayTime(int delayTime) {
+        this.delayTime = delayTime;
+    }
 
 
 
+    public String getModifyBy() {
+        return modifyBy;
+    }
 
+    public void setModifyBy(String modifyBy) {
+        this.modifyBy = modifyBy;
+    }
 
+    public long getEnvironmentCode() {
+        return this.environmentCode;
+    }
+
+    public void setEnvironmentCode(long environmentCode) {
+        this.environmentCode = environmentCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        TaskDefinition that = (TaskDefinition) o;
+        return failRetryTimes == that.failRetryTimes
+                && failRetryInterval == that.failRetryInterval
+                && timeout == that.timeout
+                && delayTime == that.delayTime
+                && Objects.equals(name, that.name)
+                && Objects.equals(description, that.description)
+                && Objects.equals(taskType, that.taskType)
+                && Objects.equals(taskParams, that.taskParams)
+                && flag == that.flag
+                && taskPriority == that.taskPriority
+                && Objects.equals(workerGroup, that.workerGroup)
+                && timeoutFlag == that.timeoutFlag
+                && timeoutNotifyStrategy == that.timeoutNotifyStrategy
+                && (Objects.equals(resourceIds, that.resourceIds)
+                || (StringUtils.EMPTY.equals(resourceIds) && that.resourceIds == null)
+                || (StringUtils.EMPTY.equals(that.resourceIds) && resourceIds == null))
+                && environmentCode == that.environmentCode
+                && taskGroupId == that.taskGroupId
+                && taskGroupPriority == that.taskGroupPriority;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskDefinition{"
+                + "id=" + id
+                + ", code=" + code
+                + ", name='" + name + '\''
+                + ", version=" + version
+                + ", description='" + description + '\''
+                + ", projectCode=" + projectCode
+                + ", userId=" + userId
+                + ", taskType=" + taskType
+                + ", taskParams='" + taskParams + '\''
+                + ", taskParamList=" + taskParamList
+                + ", taskParamMap=" + taskParamMap
+                + ", flag=" + flag
+                + ", taskPriority=" + taskPriority
+                + ", userName='" + userName + '\''
+                + ", projectName='" + projectName + '\''
+                + ", workerGroup='" + workerGroup + '\''
+                + ", failRetryTimes=" + failRetryTimes
+                + ", environmentCode='" + environmentCode + '\''
+                + ", taskGroupId='" + taskGroupId + '\''
+                + ", taskGroupPriority='" + taskGroupPriority + '\''
+                + ", failRetryInterval=" + failRetryInterval
+                + ", timeoutFlag=" + timeoutFlag
+                + ", timeoutNotifyStrategy=" + timeoutNotifyStrategy
+                + ", timeout=" + timeout
+                + ", delayTime=" + delayTime
+                + ", resourceIds='" + resourceIds + '\''
+                + ", createTime=" + createTime
+                + ", updateTime=" + updateTime
+                + '}';
+    }
+
+    public int getTaskGroupPriority() {
+        return taskGroupPriority;
+    }
+
+    public void setTaskGroupPriority(int taskGroupPriority) {
+        this.taskGroupPriority = taskGroupPriority;
+    }
 }

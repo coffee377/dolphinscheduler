@@ -40,8 +40,8 @@ swagger:
   enabled: false
 dolphinscheduler:
   enabled: true
-  root-uri: dolphin-api.test:12345
-  token: 2f4179e57d582a9cffc593420523fa8c
+  root-uri: http://localhost:12345/
+  token: 45f7fec30ea674e417e74619f28b43a7
 management:
   endpoint:
     health:

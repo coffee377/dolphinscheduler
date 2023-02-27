@@ -53,4 +53,9 @@ public class TaskInstanceServiceImpl extends BaseServiceImpl<TaskInstanceMapper,
 
          return  pageInfo;
     }
+
+    @Override
+    public TaskInstance queryById(String id) {
+        return null;
+    }
 }
