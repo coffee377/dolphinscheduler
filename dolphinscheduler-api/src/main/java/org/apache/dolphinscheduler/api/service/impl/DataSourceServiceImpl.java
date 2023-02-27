@@ -17,17 +17,26 @@
 
 package org.apache.dolphinscheduler.api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.dolphinscheduler.api.async.AsyncTask;
 import org.apache.dolphinscheduler.api.enums.Status;
+import org.apache.dolphinscheduler.api.exceptions.ServiceException;
+import org.apache.dolphinscheduler.api.service.ColumnInfoSerive;
 import org.apache.dolphinscheduler.api.service.DataSourceService;
+import org.apache.dolphinscheduler.api.service.TableInfosService;
 import org.apache.dolphinscheduler.api.utils.PageInfo;
 import org.apache.dolphinscheduler.api.utils.Result;
+import org.apache.dolphinscheduler.api.vo.DataSourceTableColumnVO;
+import org.apache.dolphinscheduler.api.vo.DataSourceTablesVO;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.utils.JSONUtils;
+import org.apache.dolphinscheduler.dao.entity.ColumnInfo;
 import org.apache.dolphinscheduler.dao.entity.DataSource;
+import org.apache.dolphinscheduler.dao.entity.TableInfos;
 import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.dao.mapper.DataSourceMapper;
 import org.apache.dolphinscheduler.dao.mapper.DataSourceUserMapper;
@@ -41,41 +50,68 @@ import org.apache.dolphinscheduler.spi.params.base.ParamsOptions;
 import org.apache.dolphinscheduler.spi.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * data source service impl
  */
 @Service
 public class DataSourceServiceImpl extends BaseServiceImpl implements DataSourceService {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(DataSourceServiceImpl.class);
-
+    
     @Autowired
     private DataSourceMapper dataSourceMapper;
-
+    
     @Autowired
     private DataSourceUserMapper datasourceUserMapper;
-
+    
+    private static final String COLUMN_DEF = "COLUMN_DEF";
+    
+    private static final String REMARKS = "REMARKS";
+    
     private static final String TABLE = "TABLE";
     private static final String VIEW = "VIEW";
     private static final String[] TABLE_TYPES = new String[]{TABLE, VIEW};
     private static final String TABLE_NAME = "TABLE_NAME";
+    private static final String TABLE_TYPE = "TABLE_TYPE";
+    private static final String REF_GENERATION = "REF_GENERATION";
+    private static final String TABLE_CAT = "TABLE_CAT";
+    private static final String TABLE_SCHEM = "TABLE_SCHEM";
+    private static final String TYPE_CAT = "TYPE_CAT";
+    private static final String TYPE_NAME = "TYPE_NAME";
+    private static final String TYPE_SCHEM = "TYPE_SCHEM";
+    @Resource
+    private TableInfosService tableInfosService;
     private static final String COLUMN_NAME = "COLUMN_NAME";
-
+    private static final String COLUMN_SIZE = "COLUMN_SIZE";
+    private static final String DATA_TYPE = "DATA_TYPE";
+    private static final String DECIMAL_DIGITS = "DECIMAL_DIGITS";
+    private static final String IS_AUTOINCREMENT = "IS_AUTOINCREMENT";
+    private static final String IS_NULLABLE = "IS_NULLABLE";
+    private static final String COLUMN_REMARKS = "REMARKS";
+    private static final String COLUMN_TYPE_NAME = "TYPE_NAME";
+    @Resource
+    private AsyncTask asyncTask;
+    @Resource
+    private ColumnInfoSerive columnInfoSerive;
+    
     /**
      * create data source
      *
-     * @param loginUser login user
+     * @param loginUser       login user
      * @param datasourceParam datasource parameters
      * @return create result code
      */
@@ -116,7 +152,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Create datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
-
+//        asyncTask.doInsert(dataSource.getId());
         return result;
     }
 
@@ -177,6 +213,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Update datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
+//        asyncTask.doTask(id);
         return result;
     }
 
@@ -226,21 +263,37 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
         Result result = new Result();
         IPage<DataSource> dataSourceList;
         Page<DataSource> dataSourcePage = new Page<>(pageNo, pageSize);
-
+    
         if (isAdmin(loginUser)) {
             dataSourceList = dataSourceMapper.selectPaging(dataSourcePage, 0, searchVal);
         } else {
             dataSourceList = dataSourceMapper.selectPaging(dataSourcePage, loginUser.getId(), searchVal);
         }
-
+        Map<Integer, List<TableInfos>> tableMap = new HashMap<>();
+        if (dataSourceList != null) {
+            List<DataSource> records = dataSourceList.getRecords();
+            List<Integer> dsIds = records.stream().map(DataSource::getId).collect(Collectors.toList());
+            //根据dsIds查询tablesInfo
+            QueryWrapper<TableInfos> query = new QueryWrapper<TableInfos>();
+            query.in("data_source_id", dsIds);
+            List<TableInfos> tableInfosList = tableInfosService.list(query);
+            if (CollectionUtils.isNotEmpty(tableInfosList)) {
+                tableMap = tableInfosList.stream().collect(Collectors.groupingBy(TableInfos::getDataSourceId));
+            }
+        
+        }
+    
         List<DataSource> dataSources = dataSourceList != null ? dataSourceList.getRecords() : new ArrayList<>();
         handlePasswd(dataSources);
+        for (DataSource dataSource : dataSources) {
+            dataSource.setChildren(tableMap.get(dataSource.getId()));
+        }
         PageInfo<DataSource> pageInfo = new PageInfo<>(pageNo, pageSize);
         pageInfo.setTotal((int) (dataSourceList != null ? dataSourceList.getTotal() : 0L));
         pageInfo.setTotalList(dataSources);
         result.setData(pageInfo);
         putMsg(result, Status.SUCCESS);
-
+    
         return result;
     }
 
@@ -448,19 +501,13 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
         DataSource dataSource = dataSourceMapper.selectById(datasourceId);
     
         List<String> tableList = null;
-        BaseConnectionParam connectionParam =
-                (BaseConnectionParam) DataSourceUtils.buildConnectionParams(
-                        dataSource.getType(),
-                        dataSource.getConnectionParams());
+        BaseConnectionParam connectionParam = (BaseConnectionParam) DataSourceUtils.buildConnectionParams(dataSource.getType(), dataSource.getConnectionParams());
     
         if (null == connectionParam) {
             putMsg(result, Status.DATASOURCE_CONNECT_FAILED);
             return result;
         }
-      
-        Connection connection =
-                DataSourceUtils.getConnection(
-                        dataSource.getType(), connectionParam);
+        Connection connection = DataSourceUtils.getConnection(dataSource.getType(), connectionParam);
         ResultSet tables = null;
     
         try {
@@ -542,6 +589,8 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             if (rs == null) {
                 return result;
             }
+            
+            
             while (rs.next()) {
                 columnList.add(rs.getString(COLUMN_NAME));
             }
@@ -551,29 +600,195 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             closeResult(rs);
             releaseConnection(connection);
         }
-
+    
         List<ParamsOptions> options = getParamsOptions(columnList);
-
+    
         result.put(Constants.DATA_LIST, options);
         putMsg(result, Status.SUCCESS);
         return result;
     }
-
+    
+    @Override
+    public List<DataSourceTablesVO> getTableInfos(Integer datasourceId) {
+        List<DataSourceTablesVO> result = null;
+        DataSource dataSource = dataSourceMapper.selectById(datasourceId);
+        BaseConnectionParam connectionParam = (BaseConnectionParam) DataSourceUtils.buildConnectionParams(dataSource.getType(), dataSource.getConnectionParams());
+        if (null == connectionParam) {
+            throw new ServiceException(Status.DATASOURCE_CONNECT_FAILED.getCode(), Status.DATASOURCE_CONNECT_FAILED.getMsg());
+        }
+        Connection connection = DataSourceUtils.getConnection(dataSource.getType(), connectionParam);
+        ResultSet tables = null;
+        try {
+            if (null == connection) {
+                throw new ServiceException(Status.DATASOURCE_CONNECT_FAILED.getCode(), Status.DATASOURCE_CONNECT_FAILED.getMsg());
+            }
+            DatabaseMetaData metaData = connection.getMetaData();
+            String schema = null;
+            try {
+                schema = metaData.getConnection().getSchema();
+            } catch (SQLException e) {
+                logger.error("cant not get the schema : {}", e.getMessage(), e);
+            }
+            tables = metaData.getTables(connectionParam.getDatabase(), getDbSchemaPattern(dataSource.getType(), schema, connectionParam), "%", TABLE_TYPES);
+            if (null == tables) {
+                throw new ServiceException(Status.GET_DATASOURCE_TABLES_ERROR.getCode(), Status.GET_DATASOURCE_TABLES_ERROR.getMsg());
+            }
+            result = new ArrayList<>();
+            while (tables.next()) {
+                DataSourceTablesVO dataSourceTablesVO = new DataSourceTablesVO();
+                dataSourceTablesVO.setTableName(tables.getString(TABLE_NAME));
+                dataSourceTablesVO.setTableSchem(tables.getString(TABLE_SCHEM));
+                dataSourceTablesVO.setTableType(tables.getString(TABLE_TYPE));
+                dataSourceTablesVO.setRemarks(tables.getString(REMARKS));
+                dataSourceTablesVO.setRefGeneration(tables.getString(REF_GENERATION));
+                dataSourceTablesVO.setTableCat(tables.getString(TABLE_CAT));
+                dataSourceTablesVO.setTypeCat(tables.getString(TYPE_CAT));
+                dataSourceTablesVO.setTypeName(tables.getString(TYPE_NAME));
+                dataSourceTablesVO.setTypeSchem(tables.getString(TYPE_SCHEM));
+                result.add(dataSourceTablesVO);
+            }
+            
+        } catch (Exception e) {
+            logger.error(e.toString(), e);
+            throw new ServiceException(Status.GET_DATASOURCE_TABLES_ERROR.getCode(), Status.GET_DATASOURCE_TABLES_ERROR.getMsg());
+        } finally {
+            closeResult(tables);
+            releaseConnection(connection);
+        }
+        return result;
+    
+    }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void refreshTableInfo(Integer datasourceId) {
+        //初始化数据源表数据和字段数据
+        initTableInfos(datasourceId);
+    }
+    
+    private void initTableInfos(Integer datasourceId) {
+        QueryWrapper<TableInfos> deleteQuery = new QueryWrapper<TableInfos>();
+        deleteQuery.eq("data_source_id", datasourceId);
+        tableInfosService.remove(deleteQuery);
+        List<DataSourceTablesVO> dataSourceTablesVOS = this.getTableInfos(datasourceId);
+        List<TableInfos> tableInfosList = new ArrayList<>();
+        List<String> tableNameList = dataSourceTablesVOS.stream().map(DataSourceTablesVO::getTableName).collect(Collectors.toList());
+        for (DataSourceTablesVO tableInfo : dataSourceTablesVOS) {
+            TableInfos tableInfos = new TableInfos();
+            BeanUtils.copyProperties(tableInfo, tableInfos);
+            tableInfos.setDataSourceId(datasourceId);
+            tableInfosList.add(tableInfos);
+        }
+        tableInfosService.saveBatch(tableInfosList);
+        initTableColumnInfos(datasourceId, tableNameList);
+    }
+    
+    private void initTableColumnInfos(Integer datasourceId, List<String> tableNameList) {
+        //删除
+        QueryWrapper<ColumnInfo> deleteColumnQuery = new QueryWrapper<ColumnInfo>();
+        deleteColumnQuery.eq("data_source_id", datasourceId);
+        deleteColumnQuery.in("table_name", tableNameList);
+        
+        columnInfoSerive.remove(deleteColumnQuery);
+        List<ColumnInfo> columnInfos = new ArrayList<ColumnInfo>();
+        List<DataSourceTableColumnVO> tableColumnInfos = this.getTableColumnInfos(datasourceId, String.join(","));
+        for (DataSourceTableColumnVO tableColumnInfo : tableColumnInfos) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            BeanUtils.copyProperties(tableColumnInfo, columnInfo);
+            columnInfos.add(columnInfo);
+        }
+        columnInfoSerive.saveBatch(columnInfos);
+    }
+    
+    @Override
+    public List<DataSourceTableColumnVO> getTableColumnInfos(Integer datasourceId, String tableName) {
+        List<DataSourceTableColumnVO> resultList = new ArrayList<DataSourceTableColumnVO>();
+        
+        DataSource dataSource = dataSourceMapper.selectById(datasourceId);
+        BaseConnectionParam connectionParam =
+                (BaseConnectionParam) DataSourceUtils.buildConnectionParams(
+                        dataSource.getType(),
+                        dataSource.getConnectionParams());
+        
+        if (null == connectionParam) {
+            throw new ServiceException(Status.DATASOURCE_CONNECT_FAILED.getCode(), Status.DATASOURCE_CONNECT_FAILED.getMsg());
+        }
+        
+        Connection connection =
+                DataSourceUtils.getConnection(dataSource.getType(), connectionParam);
+        ResultSet rs = null;
+        
+        try {
+            String database = connectionParam.getDatabase();
+            if (null == connection) {
+                return new ArrayList<>();
+            }
+            
+            DatabaseMetaData metaData = connection.getMetaData();
+            
+            if (dataSource.getType() == DbType.ORACLE) {
+                database = null;
+            }
+            String[] tableNameSplit = tableName.split(",");
+            for (String singeName : tableNameSplit) {
+                rs = metaData.getColumns(database, null, singeName, "%");
+                if (rs == null) {
+                    return new ArrayList<>();
+                }
+                while (rs.next()) {
+                    DataSourceTableColumnVO dataSourceTableColumnVO = new DataSourceTableColumnVO();
+                    dataSourceTableColumnVO.setColumnName(COLUMN_NAME);
+                    dataSourceTableColumnVO.setColumnSize(COLUMN_SIZE);
+                    dataSourceTableColumnVO.setDataType(DATA_TYPE);
+                    dataSourceTableColumnVO.setDecimalDigits(DECIMAL_DIGITS);
+                    dataSourceTableColumnVO.setIsAutoincrement(IS_AUTOINCREMENT);
+                    dataSourceTableColumnVO.setIsNullable(IS_NULLABLE);
+                    dataSourceTableColumnVO.setRemarks(COLUMN_REMARKS);
+                    dataSourceTableColumnVO.setColumnDef(COLUMN_DEF);
+                    dataSourceTableColumnVO.setTypeName(COLUMN_TYPE_NAME);
+                    resultList.add(dataSourceTableColumnVO);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.toString(), e);
+        } finally {
+            closeResult(rs);
+            releaseConnection(connection);
+        }
+        return resultList;
+    }
+    
+    @Override
+    public Result queryColumnListPaging(String dataSourceId, String tableName, Integer pageNo, Integer pageSize) {
+        Result result = new Result();
+        Page<ColumnInfo> page = new Page<>(pageNo, pageSize);
+        QueryWrapper<ColumnInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(dataSourceId != null, "data_source_id", dataSourceId);
+        queryWrapper.eq(StringUtils.isNotBlank(tableName), "table_name", tableName);
+        IPage<ColumnInfo> pageResult = columnInfoSerive.page(page, queryWrapper);
+        PageInfo<ColumnInfo> pageInfo = new PageInfo<>(pageNo, pageSize);
+        pageInfo.setTotal((int) pageResult.getTotal());
+        pageInfo.setTotalList(pageResult.getRecords());
+        result.setData(pageInfo);
+        putMsg(result, Status.SUCCESS);
+        return result;
+    }
+    
+    
     private List<ParamsOptions> getParamsOptions(List<String> columnList) {
         List<ParamsOptions> options = null;
         if (CollectionUtils.isNotEmpty(columnList)) {
             options = new ArrayList<>();
-
+            
             for (String column : columnList) {
-                ParamsOptions childrenOption =
-                        new ParamsOptions(column, column, false);
+                ParamsOptions childrenOption = new ParamsOptions(column, column, false);
                 options.add(childrenOption);
             }
         }
         return options;
     }
-
-    private String getDbSchemaPattern(DbType dbType,String schema,BaseConnectionParam connectionParam) {
+    
+    private String getDbSchemaPattern(DbType dbType, String schema, BaseConnectionParam connectionParam) {
         if (dbType == null) {
             return null;
         }

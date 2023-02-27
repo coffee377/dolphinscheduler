@@ -17,7 +17,30 @@
 
 export default {
   kerberos: {
-    auth: 'Kerberos Authentication'
+    auth: 'Kerberos Authentication',
+    kdc: 'KDC Information',
+    kdc_account_manager: 'KDC Account Manager Proofs',
+    port_config: 'Configuration Port',
+    kdc_type: 'KDC Type',
+    kerberos_safe: 'Kerberos Security Field',
+    kdc_serve_host: 'KDC Serve Host',
+    kdc_admin_host: 'KDC Admin Serve Host',
+    domain_name: 'Domain Name(s)',
+    kerberos_encryption_type: 'Kerberos Encryption Type',
+    kerberos_life_cycle: 'Kerberos Principal maximum renewable life cycle',
+    user_name: 'User Name',
+    pwd: 'Password',
+    data_node_port: 'DataNode Transceiver Port',
+    data_node_http_port: 'DataNode HTTP Web UI Port',
+    agree_tips:
+      'You need to restart the cluster for the changes to take effect',
+    agree: 'Yes,I agree',
+    restart: 'Restart',
+    day: 'day',
+    week: 'week',
+    month: 'month',
+    hasRestart: 'Restarted',
+    please_agree: 'Please Check Agree'
   },
   tenant: {
     tenant_manage: 'Tenant Manage',
@@ -285,5 +308,30 @@ export default {
     parameter_key_tips: 'Please enter key',
     parameter_value_tips: 'Please enter value',
     search_tips: 'Please enter keywords'
+  },
+  whitelist: {
+    management: 'Whitelist Manage',
+    ip: 'IP',
+    ip_tips: 'Please enter ip',
+    userId: 'userId',
+    userId_tips: 'Please enter userId',
+    ipType: 'IP Type',
+    ipType_address: 'IP Address',
+    ipType_segment: 'IP Segment',
+    create_time: 'Create Time',
+    update_time: 'Update Time',
+    create: 'Create',
+    edit: 'Edit',
+    delete: 'Delete',
+    delete_confirm: 'Delete?',
+    index: '#',
+    search_tips: 'Please enter keywords',
+    operation: 'Operation'
+  },
+  log: {
+    management: 'Log Manage',
+    task: 'Task Log',
+    audit: 'Audit Log',
+    project_name: 'Project Name'
   }
 }

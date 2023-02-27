@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.1.150.152:14924/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    hikari:
+      connection-test-query: select 1
+      minimum-idle: 5
+      auto-commit: true
+      validation-timeout: 3000
+      pool-name: DolphinScheduler
+      maximum-pool-size: 50
+      connection-timeout: 30000
+      idle-timeout: 600000
+      leak-detection-threshold: 0
+      initialization-fail-timeout: 1
+registry:
+  type: zookeeper
+  zookeeper:
+    namespace: dolphinscheduler
+    connect-string: 127.0.0.1:2181
+    retry-policy:
+      base-sleep-time: 60ms
+      max-sleep: 300ms
+      max-retries: 5
+    session-timeout: 30s
+    connection-timeout: 9s
+    block-until-connected: 6000ms
+    digest: ~
+
+

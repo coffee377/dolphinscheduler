@@ -105,9 +105,6 @@ public class IpSegmentController extends BaseController {
      * @return
      */
     @ApiOperation(value = "分页查询", notes = "分页查询")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "SysConfigQueryBO", value = "查询实体sysConfigQueryBO", required = true, dataTypeClass = SysConfigQueryBO.class)
-    })
     @GetMapping("/page")
     public CommonResult<JsonPage<IpSegmentVO>> getConfigPage(IpSegmentQueryBO req) {
         QueryWrapper<IpSegment> queryWrapper = new QueryWrapper<>();

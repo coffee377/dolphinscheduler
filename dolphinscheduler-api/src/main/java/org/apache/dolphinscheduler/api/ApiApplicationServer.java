@@ -26,10 +26,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @ServletComponentScan
 @SpringBootApplication
 @ComponentScan("org.apache.dolphinscheduler")
+@EnableAsync
 public class ApiApplicationServer {
 
     @Autowired

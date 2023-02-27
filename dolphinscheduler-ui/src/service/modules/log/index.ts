@@ -17,6 +17,10 @@
 
 import { axios } from '@/service/service'
 import { IdReq, LogReq } from './types'
+import {
+  ProjectCodeReq,
+  TaskListReq
+} from '@/service/modules/task-instances/types'
 
 export function queryLog(params: LogReq): any {
   return axios({
@@ -33,3 +37,14 @@ export function downloadTaskLog(params: IdReq): any {
     params
   })
 }
+
+// export function queryTaskListPaging(
+//   params: TaskListReq,
+//   projectCode: ProjectCodeReq
+// ): any {
+//   return axios({
+//     url: `/projects/${projectCode.projectCode}/task-instances`,
+//     method: 'get',
+//     params
+//   })
+// }

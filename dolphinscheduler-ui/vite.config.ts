@@ -21,8 +21,11 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import viteCompression from 'vite-plugin-compression'
 import path from 'path'
 
-export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/dolphinscheduler/ui/' : '/',
+export default defineConfig(({ mode }) => ({
+  base:
+    process.env.NODE_ENV !== 'production'
+      ? loadEnv(mode, './').VITE_APP_BASE || ''
+      : '/',
   plugins: [
     vue(),
     vueJsx(),
@@ -46,17 +49,11 @@ export default defineConfig({
     open: true,
     host: true,
     proxy: {
-      '/dolphinscheduler': {
-        // target: loadEnv('development', './').VITE_APP_DEV_WEB_URL,
-        target: 'http://platform-test.jqk8s.jqsoft.net/api',
+      '/api': {
+        target: loadEnv('development', './').VITE_APP_API,
         rewrite: (path) => path.replace(/^\/api/, ''),
         changeOrigin: true
-      },
-      '/platform': {
-        target: 'http://platform-test.jqk8s.jqsoft.net/api',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
-})
+}))

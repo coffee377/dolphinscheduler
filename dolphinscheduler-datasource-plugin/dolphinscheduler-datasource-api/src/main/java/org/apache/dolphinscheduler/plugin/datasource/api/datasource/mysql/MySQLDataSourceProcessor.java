@@ -17,6 +17,7 @@
 
 package org.apache.dolphinscheduler.plugin.datasource.api.datasource.mysql;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.dolphinscheduler.plugin.datasource.api.datasource.AbstractDataSourceProcessor;
 import org.apache.dolphinscheduler.plugin.datasource.api.datasource.BaseDataSourceParamDTO;
 import org.apache.dolphinscheduler.plugin.datasource.api.utils.PasswordUtils;
@@ -26,8 +27,8 @@ import org.apache.dolphinscheduler.spi.enums.DbType;
 import org.apache.dolphinscheduler.spi.utils.Constants;
 import org.apache.dolphinscheduler.spi.utils.JSONUtils;
 import org.apache.dolphinscheduler.spi.utils.StringUtils;
-
-import org.apache.commons.collections4.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,9 +36,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MySQLDataSourceProcessor extends AbstractDataSourceProcessor {
 
@@ -51,7 +49,7 @@ public class MySQLDataSourceProcessor extends AbstractDataSourceProcessor {
 
     private static final String ALLOW_URL_IN_LOCAL_IN_FILE_NAME = "allowUrlInLocalInfile";
 
-    private static final String APPEND_PARAMS = "allowLoadLocalInfile=false&autoDeserialize=false&allowLocalInfile=false&allowUrlInLocalInfile=false";
+    private static final String APPEND_PARAMS = "allowLoadLocalInfile=false&autoDeserialize=false&allowLocalInfile=false&allowUrlInLocalInfile=false&useInformationSchema=true&&useSSL=false";
 
     @Override
     public BaseDataSourceParamDTO createDatasourceParamDTO(String connectionJson) {

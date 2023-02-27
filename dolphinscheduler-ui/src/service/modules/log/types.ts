@@ -23,5 +23,11 @@ interface LogReq extends IdReq {
   limit: number
   skipLineNum: number
 }
-
-export { IdReq, LogReq }
+interface TaskListReq {
+  pageSize?: number
+  pageNum?: number
+  processInstanceName?: string
+  projectName?: string
+  taskInstanceName?: string
+}
+export { IdReq, LogReq, TaskListReq }
