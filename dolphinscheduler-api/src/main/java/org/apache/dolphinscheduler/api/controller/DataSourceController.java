@@ -23,6 +23,8 @@ import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
 import org.apache.dolphinscheduler.api.service.DataSourceService;
 import org.apache.dolphinscheduler.api.utils.Result;
+import org.apache.dolphinscheduler.api.vo.DataSourceTableColumnVO;
+import org.apache.dolphinscheduler.api.vo.DataSourceTablesVO;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.utils.CommonUtils;
 import org.apache.dolphinscheduler.common.utils.ParameterUtils;
@@ -36,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.dolphinscheduler.api.enums.Status.*;
@@ -334,9 +337,37 @@ public class DataSourceController extends BaseController {
     @ApiException(GET_DATASOURCE_TABLE_COLUMNS_ERROR)
     public Result getTableColumns(@RequestParam("datasourceId") Integer datasourceId,
                                   @RequestParam("tableName") String tableName) {
-        Map<String, Object> result = dataSourceService.getTableColumns(datasourceId,tableName);
+        Map<String, Object> result = dataSourceService.getTableColumns(datasourceId, tableName);
         return returnDataList(result);
     }
+    
+    
+    @ApiOperation(value = "getTableInfos", notes = "getTableInfos")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "datasourceId", value = "DATA_SOURCE_ID", required = true, dataType = "Int", example = "1")
+    })
+    @GetMapping(value = "/getTableInfos/{datasourceId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(GET_DATASOURCE_TABLES_ERROR)
+    public Result<List<DataSourceTablesVO>> getTableInfos(@PathVariable("datasourceId") Integer datasourceId) {
+        List<DataSourceTablesVO> tableInfos = dataSourceService.getTableInfos(datasourceId);
+        return Result.success(tableInfos);
+    }
+    
+    
+    @ApiOperation(value = "getTableColumnInfos", notes = "getTableColumnInfos")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "datasourceId", value = "DATA_SOURCE_ID", required = true, dataType = "Int", example = "1")
+    })
+    @GetMapping(value = "/getTableColumnInfos/{datasourceId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(GET_DATASOURCE_TABLES_ERROR)
+    public Result<List<DataSourceTableColumnVO>> getTableColumnInfos(@PathVariable("datasourceId") Integer datasourceId,
+                                                                     @RequestParam("tableName") String tableName) {
+        List<DataSourceTableColumnVO> tableColumnInfos = dataSourceService.getTableColumnInfos(datasourceId, tableName);
+        return Result.success(tableColumnInfos);
+    }
+    
     
     @ApiOperation(value = "refreshTableInfo", notes = "refreshTableInfo")
     @ApiImplicitParams({

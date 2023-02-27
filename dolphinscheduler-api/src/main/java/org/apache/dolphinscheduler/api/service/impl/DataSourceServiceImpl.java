@@ -152,7 +152,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Create datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
-        asyncTask.doInsert(dataSource.getId());
+//        asyncTask.doInsert(dataSource.getId());
         return result;
     }
 
@@ -213,7 +213,7 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             logger.error("Update datasource error.", ex);
             putMsg(result, Status.DATASOURCE_EXIST);
         }
-        asyncTask.doTask(id);
+//        asyncTask.doTask(id);
         return result;
     }
 
@@ -589,6 +589,8 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             if (rs == null) {
                 return result;
             }
+            
+            
             while (rs.next()) {
                 columnList.add(rs.getString(COLUMN_NAME));
             }
