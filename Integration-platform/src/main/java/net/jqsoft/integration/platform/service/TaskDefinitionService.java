@@ -2,6 +2,7 @@ package net.jqsoft.integration.platform.service;
 
 import net.jqsoft.integration.platform.base.BaseService;
 import net.jqsoft.integration.platform.common.CommonResult;
+import net.jqsoft.integration.platform.model.bo.TaskDefinitionBO;
 import net.jqsoft.integration.platform.model.entity.TaskDefinition;
 import net.jqsoft.integration.platform.model.enums.ProcessExecutionTypeEnum;
 import net.jqsoft.integration.platform.model.enums.ReleaseState;
@@ -30,5 +31,12 @@ public interface TaskDefinitionService extends BaseService<TaskDefinition> {
      * @param code
      * @return
      */
-    Map<String, Object> queryProcessDefinitionByCode(long projectCode, long code);
+    CommonResult queryProcessDefinitionByCode(long projectCode, long code);
+
+    /**
+     * 根据数据创建作业同步参数
+     * @param taskDefinitionBO
+     * @return
+     */
+    String createProcessDefinition(TaskDefinitionBO taskDefinitionBO);
 }

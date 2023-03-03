@@ -25,6 +25,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import net.jqsoft.integration.platform.base.BaseController;
 import net.jqsoft.integration.platform.common.CommonResult;
+import net.jqsoft.integration.platform.model.bo.TaskDefinitionBO;
 import net.jqsoft.integration.platform.model.entity.DataSource;
 import net.jqsoft.integration.platform.model.entity.DsDriverInfo;
 import net.jqsoft.integration.platform.model.entity.TaskDefinitionLog;
@@ -69,76 +70,7 @@ public class TaskDefinitionController extends BaseController {
     private TaskDefinitionService taskDefinitionService;
 
 
-    @ApiOperation(value = "createProcessDefinition", notes = "CREATE_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
-            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
-            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String")
-    })
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public CommonResult createProcessDefinition(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
-                                          @RequestParam(value = "name", required = true) String name,
-                                          @RequestParam(value = "description", required = false) String description,
-                                          @RequestParam(value = "globalParams", required = false, defaultValue = "[]") String globalParams,
-                                          @RequestParam(value = "locations", required = false) String locations,
-                                          @RequestParam(value = "timeout", required = false, defaultValue = "0") int timeout,
-                                          @RequestParam(value = "tenantCode", required = true) String tenantCode,
-                                          @RequestParam(value = "taskRelationJson", required = true) String taskRelationJson,
-                                          @RequestParam(value = "taskDefinitionJson", required = true) String taskDefinitionJson,
-                                          @RequestParam(value = "executionType", defaultValue = "PARALLEL") ProcessExecutionTypeEnum executionType) {
-        String dataxTaskDefinitionJson = taskDefinitionService.createQueryAndResultSql(taskDefinitionJson);
-        CommonResult result = taskDefinitionService.pushCreateTaskToDs( projectCode, name, description, globalParams,
-                locations, timeout, tenantCode, taskRelationJson, dataxTaskDefinitionJson,executionType);
 
-
-        return CommonResult.success();
-    }
-
-    /**
-     * update process definition
-     *
-     * @param projectCode project code
-     * @param name process definition name
-     * @param code process definition code
-     * @param description description
-     * @param globalParams globalParams
-     * @param locations locations for nodes
-     * @param timeout timeout
-     * @param tenantCode tenantCode
-     * @param taskRelationJson relation json for nodes
-     * @param taskDefinitionJson taskDefinitionJson
-     * @return update result code
-     */
-    @ApiOperation(value = "update", notes = "UPDATE_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
-            @ApiImplicitParam(name = "code", value = "PROCESS_DEFINITION_CODE", required = true, dataType = "Long", example = "123456789"),
-            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
-            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String"),
-            @ApiImplicitParam(name = "releaseState", value = "RELEASE_PROCESS_DEFINITION_NOTES", required = false, dataType = "ReleaseState")
-    })
-    @PutMapping (value = "/{code}")
-    @ResponseStatus(HttpStatus.OK)
-    public CommonResult updateProcessDefinition(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
-                                          @RequestParam(value = "name", required = false) String name,
-                                          @PathVariable(value = "code", required = true) long code,
-                                          @RequestParam(value = "description", required = false) String description,
-                                          @RequestParam(value = "globalParams", required = false, defaultValue = "[]") String globalParams,
-                                          @RequestParam(value = "locations", required = false) String locations,
-                                          @RequestParam(value = "timeout", required = false, defaultValue = "0") int timeout,
-                                          @RequestParam(value = "tenantCode", required = true) String tenantCode,
-                                          @RequestParam(value = "taskRelationJson", required = true) String taskRelationJson,
-                                          @RequestParam(value = "taskDefinitionJson", required = true) String taskDefinitionJson,
-                                           @RequestParam(value = "fieldsMap", required = false) String fields,
-                                          @RequestParam(value = "executionType", defaultValue = "PARALLEL") ProcessExecutionTypeEnum executionType,
-                                          @RequestParam(value = "releaseState", required = false, defaultValue = "OFFLINE") ReleaseState releaseState) {
-
-        String dataxTaskDefinitionJson = taskDefinitionService.createQueryAndResultSql(taskDefinitionJson);
-        CommonResult result = taskDefinitionService.pushTaskToDs(projectCode,code,locations,dataxTaskDefinitionJson,taskRelationJson,tenantCode,executionType,
-                description,globalParams,timeout,releaseState,name);
-        return CommonResult.success();
-    }
 
     /**
      * query detail of process definition by code
@@ -155,8 +87,21 @@ public class TaskDefinitionController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public CommonResult queryProcessDefinitionByCode(@ApiParam(name = "projectCode", value = "PROJECT_CODE", required = true) @PathVariable long projectCode,
                                                @PathVariable(value = "code", required = true) long code) {
-        Map<String, Object> result = taskDefinitionService.queryProcessDefinitionByCode(projectCode, code);
-        return CommonResult.success(result);
+        return taskDefinitionService.queryProcessDefinitionByCode(projectCode, code);
+    }
+
+
+    @ApiOperation(value = "createProcessDefinition", notes = "创建作业实例")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String")
+    })
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommonResult createProcessDefinition(@RequestBody TaskDefinitionBO taskDefinitionBO ) {
+
+         taskDefinitionService.createProcessDefinition(taskDefinitionBO);
+
+        return CommonResult.success();
     }
 
 

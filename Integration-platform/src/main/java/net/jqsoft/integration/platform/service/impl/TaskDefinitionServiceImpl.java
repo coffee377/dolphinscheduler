@@ -3,10 +3,16 @@ package net.jqsoft.integration.platform.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import com.github.xiaoymin.knife4j.core.util.CommonUtils;
+import com.mysql.cj.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.jqsoft.integration.platform.base.BaseServiceImpl;
 import net.jqsoft.integration.platform.common.CommonResult;
 import net.jqsoft.integration.platform.mapper.TaskDefinitionMapper;
+import net.jqsoft.integration.platform.model.bo.ProjectBO;
+import net.jqsoft.integration.platform.model.bo.TaskBO;
+import net.jqsoft.integration.platform.model.bo.TaskDefinitionBO;
+import net.jqsoft.integration.platform.model.bo.TaskRelationJsonBO;
 import net.jqsoft.integration.platform.model.entity.DataSource;
 import net.jqsoft.integration.platform.model.entity.TaskDefinition;
 import net.jqsoft.integration.platform.model.entity.TaskDefinitionLog;
@@ -22,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -93,9 +98,12 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
         mapParams.put("timeout",timeout);
         mapParams.put("releaseState",releaseState);
         ResponseEntity<String> resp = dsClient.exchange(postUrl, HttpMethod.PUT, request, String.class,mapParams);
-        String body = resp.getBody();
-
-        return CommonResult.success();
+        Map<String, Object> result = JSONObject.parseObject(resp.getBody(), Map.class);
+        if(Objects.equals(result.get("msg"),"success")){
+            return CommonResult.success();
+        }else{
+            return CommonResult.failed(result.get("msg").toString());
+        }
     }
 
     @Override
@@ -124,13 +132,17 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
         mapParams.put("globalParams",globalParams);
         mapParams.put("timeout",timeout);
         ResponseEntity<String> resp = dsClient.exchange(postUrl, HttpMethod.POST, request, String.class,mapParams);
-        String body = resp.getBody();
+        Map<String, Object> result = JSONObject.parseObject(resp.getBody(), Map.class);
+        if(Objects.equals(result.get("msg"),"success")){
+            return CommonResult.success();
+        }else{
+            return CommonResult.failed(result.get("msg").toString());
+        }
 
-        return CommonResult.success();
     }
 
     @Override
-    public Map<String, Object> queryProcessDefinitionByCode(long projectCode, long code) {
+    public CommonResult queryProcessDefinitionByCode(long projectCode, long code) {
         String postUrl = url +"/dolphinscheduler/projects/{projectCode}/process-definition/{code}";
         HttpHeaders headers = new HttpHeaders();
         // 设置验签用的数据
@@ -146,15 +158,106 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
         mapParams.put("code",code);
         ResponseEntity<String> resp = dsClient.exchange(postUrl, HttpMethod.GET, request, String.class,mapParams);
         Map<String, Object> resonseBody = JSONObject.parseObject(resp.getBody(), Map.class);
-        Object data = resonseBody.get("data");
         Map<String, Object> returnData = JSONObject.parseObject(JSONObject.toJSONString(resonseBody.get("data")), Map.class);
-        Object taskDefinitionList = returnData.get("taskDefinitionList");
-        return returnData;
+
+        TaskDefinitionBO taskDefinitionBO =  createReturnParams(returnData);
+        return CommonResult.success(taskDefinitionBO);
+    }
+
+    private TaskDefinitionBO createReturnParams(Map<String, Object> returnData) {
+        TaskDefinitionBO taskDefinitionBO = new TaskDefinitionBO();
+        List<TaskDefinitionLog> taskDefinitionLogs = JSONUtils.toList(returnData.get("taskDefinitionList").toString(), TaskDefinitionLog.class);
+        Map<String ,Object> processDefinitionList = JSONObject.parseObject(returnData.get("processDefinition").toString(), Map.class);
+        List<TaskRelationJsonBO> taskRelationJsonBOS = JSONUtils.toList(returnData.get("processTaskRelationList").toString(), TaskRelationJsonBO.class);
+        taskDefinitionBO.setId(processDefinitionList.get("id").toString());
+        taskDefinitionBO.setName(processDefinitionList.get("name").toString());
+        taskDefinitionBO.setCode(Long.valueOf(processDefinitionList.get("code").toString()));
+        taskDefinitionBO.setDescription(processDefinitionList.get("description").toString());
+        ResponseEntity<String> projectResult = queryProjectByCode(Long.valueOf(processDefinitionList.get("projectCode").toString()));
+        Map<String, Object> project = JSONObject.parseObject(projectResult.getBody(), Map.class);
+        Map<String, Object> projectData = JSONObject.parseObject(JSONObject.toJSONString(project.get("data")), Map.class);
+        ProjectBO projectBO = new ProjectBO();
+        projectBO.setId(Integer.valueOf(projectData.get("id").toString()));
+        projectBO.setName(projectData.get("name").toString());
+        projectBO.setCode(Long.valueOf(projectData.get("code").toString()));
+        taskDefinitionBO.setProject(projectBO);
+        List<TaskBO>  taskBOList = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(taskDefinitionLogs)){
+          taskDefinitionLogs.forEach(taskDefinitionLog -> {
+              TaskBO taskBO = new TaskBO();
+              taskBO.setId(taskDefinitionLog.getId());
+              taskBO.setCode(taskDefinitionLog.getCode());
+              taskBO.setFlag(taskDefinitionLog.getFlag());
+              taskBO.setName(taskDefinitionLog.getName());
+              taskBO.setType(taskDefinitionLog.getTaskType());
+              taskBO.setDelay(taskDefinitionLog.getDelayTime());
+              taskBO.setDescription(taskDefinitionLog.getDescription());
+              taskBO.setPriority(taskDefinitionLog.getTaskPriority());
+              taskBO.setParams(taskDefinitionLog.getTaskParams());
+              if(!CollectionUtils.isEmpty(taskRelationJsonBOS)){
+                  List<TaskRelationJsonBO> collect = taskRelationJsonBOS.stream().filter(t -> t.getPostTaskCode() == taskDefinitionLog.getCode()).collect(Collectors.toList());
+                  if(!CollectionUtils.isEmpty(collect)){
+                      taskBO.setPreTask(collect.get(0).getPreTaskCode());
+                  }
+              }
+              taskBOList.add(taskBO);
+              taskDefinitionBO.setTasks(taskBOList);
+          });
+      }
+        return taskDefinitionBO;
+    }
+
+    @Override
+    public String createProcessDefinition(TaskDefinitionBO taskDefinitionBO) {
+        //调用DS api的接口参数
+        //任务实例对象
+        List<TaskBO> tasks = taskDefinitionBO.getTasks();
+       if(!CollectionUtils.isEmpty(tasks)){
+           List<TaskDefinitionLog> taskDefinitionLogs = new ArrayList<>();
+           List<TaskRelationJsonBO> taskRelationJsonBOS = new ArrayList<>();
+           tasks.forEach(task -> {
+               TaskDefinitionLog taskDefinitionLog = new TaskDefinitionLog();
+               taskDefinitionLog.setTaskParams(task.getParams());
+               taskDefinitionLog.setId(task.getId());
+               taskDefinitionLog.setCode(task.getCode());
+               taskDefinitionLog.setDelayTime(task.getDelay());
+               taskDefinitionLog.setDescription(task.getDescription());
+               taskDefinitionLog.setName(task.getName());
+               taskDefinitionLog.setFlag(task.getFlag());
+               taskDefinitionLog.setTaskType(task.getType());
+               taskDefinitionLog.setTaskPriority(task.getPriority());
+               taskDefinitionLog.setEnvironmentCode(-1);
+               taskDefinitionLog.setFailRetryInterval(1);
+               taskDefinitionLog.setFailRetryTimes(0);
+               taskDefinitionLog.setTaskGroupId(1);
+               taskDefinitionLog.setTimeout(0);
+               taskDefinitionLogs.add(taskDefinitionLog);
+               TaskRelationJsonBO taskRelationJsonBO = new TaskRelationJsonBO();
+               taskRelationJsonBO.setPreTaskCode(task.getPreTask());
+               taskRelationJsonBO.setPreTaskVersion(0);
+               taskRelationJsonBO.setPostTaskCode(taskDefinitionLog.getCode());
+               taskRelationJsonBOS.add(taskRelationJsonBO);
+           });
+           //ID 为空时 创建对象
+           if(taskDefinitionBO.getId() == null){
+               pushCreateTaskToDs( taskDefinitionBO.getProject().getCode(), taskDefinitionBO.getName(), taskDefinitionBO.getDescription(), null,
+                       null, 0, "default", JSON.toJSON(taskRelationJsonBOS).toString(), JSON.toJSON(taskDefinitionLogs).toString(),ProcessExecutionTypeEnum.PARALLEL);
+
+           }else {
+               //更新
+               pushTaskToDs(taskDefinitionBO.getProject().getCode(), taskDefinitionBO.getCode(), null, JSON.toJSON(taskDefinitionLogs).toString(), JSON.toJSON(taskRelationJsonBOS).toString(),
+                       "default", ProcessExecutionTypeEnum.PARALLEL, taskDefinitionBO.getDescription(), null, 0, ReleaseState.OFFLINE ,taskDefinitionBO.getName());
+           }
+
+       }
+
+       //获取
+
+        return null;
     }
 
     private String createDataxSql(Map<String, Object> taskParamsMap) {
         Object fields = taskParamsMap.get("fieldsMap");
-        System.out.println(fields);
         Map<String, Object> fieldsMap = JSONObject.parseObject(JSONObject.toJSONString(fields), Map.class);
         StringBuilder querySqlBuilder = new StringBuilder();
         List<String> resultFileds = new ArrayList<>();
@@ -241,4 +344,21 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
         newTaskParamsMap.put("customConfig", "1");
         return JSON.toJSONString(newTaskParamsMap);
     }
+
+
+    private ResponseEntity<String> queryProjectByCode(Long projectCode){
+        String getUrl = url + "/dolphinscheduler/projects/{projectCode}";
+        HttpHeaders headers = new HttpHeaders();
+        // 设置验签用的数据
+        // 设置content-type,很据需求设置
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        // 设置请求体
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        // 用HttpEntity封装整个请求报文
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        //put传递单参
+        Map<String,Object> mapParams=new HashMap<>();
+        mapParams.put("projectCode",projectCode);
+        return dsClient.exchange(getUrl, HttpMethod.GET, request, String.class,mapParams);
+    };
 }
