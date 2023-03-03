@@ -20,9 +20,8 @@ package org.apache.dolphinscheduler.api.security;
 import org.apache.dolphinscheduler.api.utils.Result;
 import org.apache.dolphinscheduler.dao.entity.User;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public interface Authenticator {
     /**
@@ -40,4 +39,8 @@ public interface Authenticator {
      * @return user
      */
     User getAuthUser(HttpServletRequest request);
+    
+    
+    Result<Map<String, String>> authenticateByUserName(String userName, String ip);
+    
 }

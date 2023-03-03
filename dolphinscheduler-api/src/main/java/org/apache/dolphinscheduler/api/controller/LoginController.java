@@ -17,10 +17,12 @@
 
 package org.apache.dolphinscheduler.api.controller;
 
-import static org.apache.dolphinscheduler.api.enums.Status.IP_IS_EMPTY;
-import static org.apache.dolphinscheduler.api.enums.Status.SIGN_OUT_ERROR;
-import static org.apache.dolphinscheduler.api.enums.Status.USER_LOGIN_FAILURE;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.lang.StringUtils;
 import org.apache.dolphinscheduler.api.aspect.AccessLogAnnotation;
 import org.apache.dolphinscheduler.api.enums.Status;
 import org.apache.dolphinscheduler.api.exceptions.ApiException;
@@ -29,28 +31,16 @@ import org.apache.dolphinscheduler.api.service.SessionService;
 import org.apache.dolphinscheduler.api.utils.Result;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.dao.entity.User;
-
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import springfox.documentation.annotations.ApiIgnore;
+import static org.apache.dolphinscheduler.api.enums.Status.*;
 
 /**
  * login controller
@@ -135,5 +125,42 @@ public class LoginController extends BaseController {
         //clear session
         request.removeAttribute(Constants.SESSION_USER);
         return success();
+    }
+    
+    @ApiOperation(value = "loginByUserName", notes = "LOGIN_BY_USERNAME_NOTES")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userName", value = "USER_NAME", required = true, dataType = "String")})
+    @PostMapping(value = "/loginByUserName")
+    @ApiException(USER_LOGIN_FAILURE)
+    @AccessLogAnnotation(ignoreRequestArgs = {"request", "response"})
+    public Result loginByUserName(@RequestParam(value = "userName") String userName,
+                        HttpServletRequest request,
+                        HttpServletResponse response) {
+        //user name check
+        if (StringUtils.isEmpty(userName)) {
+            return error(Status.USER_NAME_NULL.getCode(),
+                    Status.USER_NAME_NULL.getMsg());
+        }
+        
+        // user ip check
+        String ip = getClientIpAddress(request);
+        if (StringUtils.isEmpty(ip)) {
+            return error(IP_IS_EMPTY.getCode(), IP_IS_EMPTY.getMsg());
+        }
+        
+        // verify username and password
+        Result<Map<String, String>> result = authenticator.authenticateByUserName(userName, ip);
+        if (result.getCode() != Status.SUCCESS.getCode()) {
+            return result;
+        }
+        
+        response.setStatus(HttpStatus.SC_OK);
+        Map<String, String> cookieMap = result.getData();
+        for (Map.Entry<String, String> cookieEntry : cookieMap.entrySet()) {
+            Cookie cookie = new Cookie(cookieEntry.getKey(), cookieEntry.getValue());
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+        }
+        
+        return result;
     }
 }

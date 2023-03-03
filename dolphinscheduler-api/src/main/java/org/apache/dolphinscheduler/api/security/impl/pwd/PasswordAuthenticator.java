@@ -31,4 +31,5 @@ public class PasswordAuthenticator extends AbstractAuthenticator {
     public User login(String userId, String password, String extra) {
         return userService.queryUser(userId, password);
     }
+    
 }
