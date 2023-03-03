@@ -26,15 +26,13 @@ import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.enums.Flag;
 import org.apache.dolphinscheduler.dao.entity.Session;
 import org.apache.dolphinscheduler.dao.entity.User;
-
-import java.util.Collections;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.Map;
 
 public abstract class AbstractAuthenticator implements Authenticator {
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthenticator.class);
@@ -94,6 +92,38 @@ public abstract class AbstractAuthenticator implements Authenticator {
         }
         //get user object from session
         return userService.queryUser(session.getUserId());
+    }
+    
+    
+    @Override
+    public Result<Map<String, String>> authenticateByUserName(String userName, String extra) {
+        Result<Map<String, String>> result = new Result<>();
+        User user = userService.queryUser(userName);
+        if (user == null) {
+            result.setCode(Status.USER_NAME_PASSWD_ERROR.getCode());
+            result.setMsg(Status.USER_NAME_PASSWD_ERROR.getMsg());
+            return result;
+        }
+        
+        // check user state
+        if (user.getState() == Flag.NO.ordinal()) {
+            result.setCode(Status.USER_DISABLED.getCode());
+            result.setMsg(Status.USER_DISABLED.getMsg());
+            return result;
+        }
+        
+        // create session
+        String sessionId = sessionService.createSession(user, extra);
+        if (sessionId == null) {
+            result.setCode(Status.LOGIN_SESSION_FAILED.getCode());
+            result.setMsg(Status.LOGIN_SESSION_FAILED.getMsg());
+            return result;
+        }
+        logger.info("sessionId : {}", sessionId);
+        result.setData(Collections.singletonMap(Constants.SESSION_ID, sessionId));
+        result.setCode(Status.SUCCESS.getCode());
+        result.setMsg(Status.LOGIN_SUCCESS.getMsg());
+        return result;
     }
 
 }
