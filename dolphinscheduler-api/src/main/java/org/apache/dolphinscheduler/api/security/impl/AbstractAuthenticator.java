@@ -24,6 +24,7 @@ import org.apache.dolphinscheduler.api.service.UsersService;
 import org.apache.dolphinscheduler.api.utils.Result;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.enums.Flag;
+import org.apache.dolphinscheduler.common.enums.UserType;
 import org.apache.dolphinscheduler.dao.entity.Session;
 import org.apache.dolphinscheduler.dao.entity.User;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 public abstract class AbstractAuthenticator implements Authenticator {
@@ -100,9 +102,22 @@ public abstract class AbstractAuthenticator implements Authenticator {
         Result<Map<String, String>> result = new Result<>();
         User user = userService.queryUser(userName);
         if (user == null) {
-            result.setCode(Status.USER_NAME_PASSWD_ERROR.getCode());
-            result.setMsg(Status.USER_NAME_PASSWD_ERROR.getMsg());
-            return result;
+            user= new User();
+            user.setUserName(userName);
+            user.setUserPassword("");
+            user.setEmail("");
+            user.setUserType(UserType.GENERAL_USER);
+            user.setTenantId(0);
+            user.setCreateTime(new Date());
+            user.setUpdateTime(new Date());
+            user.setPhone("");
+            user.setQueueName("");
+            user.setAlertGroup("");
+            user.setTenantCode("");
+            user.setQueue("");
+            user.setState(1);
+            user.setTimeZone("");
+            userService.save(user);
         }
         
         // check user state

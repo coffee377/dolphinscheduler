@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         if (StringUtils.isBlank(userName)) {
             return CommonResult.failed("该用户未携带用户名信息");
         }
-        //此处调海豚登录接口
+        //此处调海豚登录接口,此处之后用枚举
         url = url + "/dolphinscheduler/loginByUserName";
         Map<String, Object> dsMap = new HashMap<>();
         dsMap.put("username", userName);

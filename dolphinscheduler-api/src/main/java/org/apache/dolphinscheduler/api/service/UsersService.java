@@ -297,4 +297,12 @@ public interface UsersService {
      * @return create result code
      */
     Map<String, Object> batchActivateUser(User loginUser, List<String> userNames);
+    
+    /**
+     * activate user, only system admin have permission, change users state code 0 to 1
+     *
+     * @param loginUser login user
+     * @return create result code
+     */
+    Map<String, Object> save(User loginUser);
 }

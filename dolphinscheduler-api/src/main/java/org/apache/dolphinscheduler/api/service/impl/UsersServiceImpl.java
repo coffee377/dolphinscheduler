@@ -1258,4 +1258,12 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
         result.put(Constants.DATA_LIST, res);
         return result;
     }
+    
+    @Override
+    public Map<String, Object> save(User loginUser) {
+        Map<String, Object> result = new HashMap<>();
+        userMapper.insert(loginUser);
+        putMsg(result, Status.SUCCESS);
+        return result;
+    }
 }
