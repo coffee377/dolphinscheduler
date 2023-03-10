@@ -13,9 +13,9 @@ RUN java -Djarmode=layertools -jar application.jar extract
 # 正式构建镜像
 FROM $JAVA_IMAGE
 
-RUN apt update ; \
-    apt install -y curl sudo ; \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt update ; \
+#    apt install -y curl sudo ; \
+#    rm -rf /var/lib/apt/lists/*
 
 # 指定工作目录，目录不存在会自动创建
 WORKDIR /app
