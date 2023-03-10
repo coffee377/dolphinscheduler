@@ -1,5 +1,5 @@
 # java 镜像名称
-ARG JAVA_IMAGE=openjdk:8-jre-slim-buster
+ARG JAVA_IMAGE=harbor.jqk8s.jqsoft.net/zhmz/openjdk:8-jre-slim-buster
 
 # 指定基础镜像，这是多阶段构建的前期阶段
 FROM $JAVA_IMAGE as builder
