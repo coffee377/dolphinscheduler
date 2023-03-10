@@ -14,16 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-FROM openjdk:8-jre-slim-buster
+ARG JAVA_IMAGE=openjdk:8-jre-slim-buster
+FROM $JAVA_IMAGE
 
 ENV DOCKER true
 ENV TZ Asia/Shanghai
 ENV DOLPHINSCHEDULER_HOME /opt/dolphinscheduler
 
-RUN apt update ; \
-    apt install -y curl ; \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt update ; \
+#    apt install -y curl ; \
+#    rm -rf /var/lib/apt/lists/*
 
 WORKDIR $DOLPHINSCHEDULER_HOME
 
