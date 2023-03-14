@@ -33,6 +33,6 @@ public class AuthController extends BaseController {
     @PostMapping("/authLogin")
     public CommonResult<String> authLogin(@Validated  @RequestBody LoginBO req) {
         CommonResult<String> commonResult = authService.authLogin(req);
-        return CommonResult.success(token);
+        return commonResult;
     }
 }
