@@ -25,7 +25,7 @@ import net.jqsoft.integration.platform.model.enums.DbType;
 
 import java.util.Date;
 @Data
-@TableName("dsx_dnd_registry")
+@TableName("t_dsx_dnd_registry")
 public class DxsComponentType {
     /**
      * id

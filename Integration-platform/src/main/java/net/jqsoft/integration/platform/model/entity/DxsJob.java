@@ -24,7 +24,7 @@ import lombok.Data;
 
 import java.util.Date;
 @Data
-@TableName("dsx_job")
+@TableName("t_dsx_job")
 public class DxsJob {
     /**
      * id

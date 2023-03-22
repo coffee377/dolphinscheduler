@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("t_dip_network")
+@TableName("t_dsx_network")
 public class IpSegment  implements Serializable {
     /**
      * 主键id

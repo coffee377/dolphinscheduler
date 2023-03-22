@@ -27,7 +27,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("dsx_dnd_category")
+@TableName("t_dsx_dnd_category")
 public class DxsDhdCategory    implements Serializable {
     /**
      * id

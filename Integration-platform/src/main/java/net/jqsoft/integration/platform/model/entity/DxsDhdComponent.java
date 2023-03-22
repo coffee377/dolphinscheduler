@@ -25,7 +25,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("dsx_dnd_component")
+@TableName("t_dsx_dnd_component")
 public class DxsDhdComponent {
     /**
      * id

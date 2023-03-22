@@ -9,7 +9,7 @@ import net.jqsoft.integration.platform.model.enums.IsEnableEnum;
 import java.io.Serializable;
 
 @Data
-@TableName("t_dip_sys_config")
+@TableName("t_dsx_sys_config")
 @Accessors(chain = true)
 public class SysConfig extends BaseEntity implements Serializable {
     /**
