@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 @Data
-@TableName("t_dxs_ds_column_info")
+@TableName("t_dip_ds_column_info")
 public class ColumnInfo implements Serializable {
     private Integer id;
     

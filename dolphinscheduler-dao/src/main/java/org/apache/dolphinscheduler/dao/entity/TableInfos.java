@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 
 @Data
-@TableName("t_dsx_ds_table_info")
+@TableName("t_dip_ds_table_info")
 public class TableInfos implements Serializable {
     
     @TableId(type = IdType.ID_WORKER)
