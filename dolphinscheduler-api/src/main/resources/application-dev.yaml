@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.1.150.152:14924/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.1.152.19:3306/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
-    password: root
+    password: jqkj5350**)
     hikari:
       connection-test-query: select 1
       minimum-idle: 5
