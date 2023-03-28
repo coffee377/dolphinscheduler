@@ -63,10 +63,7 @@ import java.util.Map;
 @RequestMapping("projects/{projectCode}/task-definition")
 public class TaskDefinitionController extends BaseController {
 
-    @Resource
-    private RestTemplate dsClient;
-
-    @Resource
+    @Autowired
     private TaskDefinitionService taskDefinitionService;
 
 

@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import javafx.scene.layout.Priority;
+import lombok.Data;
 import net.jqsoft.integration.platform.model.enums.Flag;
 import net.jqsoft.integration.platform.model.enums.TaskTimeoutStrategy;
 import net.jqsoft.integration.platform.model.enums.TimeoutFlag;
@@ -45,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
  * task definition
  */
 @TableName("t_ds_task_definition")
+@Data
 public class TaskDefinition {
 
     /**
