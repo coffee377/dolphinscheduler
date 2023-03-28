@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
-import javafx.scene.layout.Priority;
 import lombok.Data;
 import net.jqsoft.integration.platform.model.enums.Flag;
 import net.jqsoft.integration.platform.model.enums.TaskTimeoutStrategy;
@@ -114,10 +113,7 @@ public class TaskDefinition {
      */
     private Flag flag;
 
-    /**
-     * task priority
-     */
-    private Priority taskPriority;
+
 
     /**
      * user name
@@ -374,13 +370,6 @@ public class TaskDefinition {
         this.taskType = taskType;
     }
 
-    public Priority getTaskPriority() {
-        return taskPriority;
-    }
-
-    public void setTaskPriority(Priority taskPriority) {
-        this.taskPriority = taskPriority;
-    }
 
     public String getWorkerGroup() {
         return workerGroup;
@@ -471,7 +460,6 @@ public class TaskDefinition {
                 && Objects.equals(taskType, that.taskType)
                 && Objects.equals(taskParams, that.taskParams)
                 && flag == that.flag
-                && taskPriority == that.taskPriority
                 && Objects.equals(workerGroup, that.workerGroup)
                 && timeoutFlag == that.timeoutFlag
                 && timeoutNotifyStrategy == that.timeoutNotifyStrategy
@@ -498,7 +486,6 @@ public class TaskDefinition {
                 + ", taskParamList=" + taskParamList
                 + ", taskParamMap=" + taskParamMap
                 + ", flag=" + flag
-                + ", taskPriority=" + taskPriority
                 + ", userName='" + userName + '\''
                 + ", projectName='" + projectName + '\''
                 + ", workerGroup='" + workerGroup + '\''

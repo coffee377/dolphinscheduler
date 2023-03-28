@@ -192,7 +192,6 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
               taskBO.setType(taskDefinitionLog.getTaskType());
               taskBO.setDelay(taskDefinitionLog.getDelayTime());
               taskBO.setDescription(taskDefinitionLog.getDescription());
-              taskBO.setPriority(taskDefinitionLog.getTaskPriority());
               taskBO.setParams(taskDefinitionLog.getTaskParams());
               if(!CollectionUtils.isEmpty(taskRelationJsonBOS)){
                   List<TaskRelationJsonBO> collect = taskRelationJsonBOS.stream().filter(t -> t.getPostTaskCode() == taskDefinitionLog.getCode()).collect(Collectors.toList());
@@ -225,7 +224,6 @@ public class TaskDefinitionServiceImpl extends BaseServiceImpl<TaskDefinitionMap
                taskDefinitionLog.setName(task.getName());
                taskDefinitionLog.setFlag(task.getFlag());
                taskDefinitionLog.setTaskType(task.getType());
-               taskDefinitionLog.setTaskPriority(task.getPriority());
                taskDefinitionLog.setEnvironmentCode(-1);
                taskDefinitionLog.setFailRetryInterval(1);
                taskDefinitionLog.setFailRetryTimes(0);
