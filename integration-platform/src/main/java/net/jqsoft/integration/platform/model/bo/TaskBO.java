@@ -17,20 +17,14 @@
 
 package net.jqsoft.integration.platform.model.bo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
-import javafx.scene.layout.Priority;
 import lombok.Data;
 import net.jqsoft.integration.platform.model.enums.Flag;
 import net.jqsoft.integration.platform.util.JSONUtils;
-
 import java.io.Serializable;
-import java.util.Date;
+
 
 /**
  * task instance
@@ -53,9 +47,6 @@ public class TaskBO implements Serializable {
     private Long code ;
 
     private Flag flag;
-
-    private Priority priority;
-
 
     private String description;
 
