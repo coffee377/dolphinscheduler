@@ -1,5 +1,5 @@
-# java 镜像名称
-ARG JAVA_IMAGE=openjdk:8-jre-slim-buster
+# java 基础镜像，包含 curl,ping,telnet,vim 等常用工具
+ARG JAVA_IMAGE=coffee377/openjdk:8-jre-slim-bullseye
 
 # 指定基础镜像，这是多阶段构建的前期阶段
 FROM $JAVA_IMAGE as builder
@@ -12,10 +12,6 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 # 正式构建镜像
 FROM $JAVA_IMAGE
-
-RUN apt update ; \
-    apt install -y curl sudo ; \
-    rm -rf /var/lib/apt/lists/*
 
 # 指定工作目录，目录不存在会自动创建
 WORKDIR /app
@@ -39,4 +35,3 @@ EXPOSE 8080
 
 # 启动 jar 的命令
 ENTRYPOINT ["sh","-c","java $JVM_OPTS $JAVA_OPTS org.springframework.boot.loader.JarLauncher"]
-#CMD [ "/bin/bash", "./bin/start.sh" ]
