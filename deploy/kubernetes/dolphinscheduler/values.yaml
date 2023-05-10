@@ -90,7 +90,7 @@ common:
     YARN_JOB_HISTORY_STATUS_ADDRESS: "http://ds1:19888/ws/v1/history/mapreduce/jobs/%s"
     DATASOURCE_ENCRYPTION_ENABLE: "false"
     DATASOURCE_ENCRYPTION_SALT: "!@#$%^&*"
-    SUDO_ENABLE: "true"
+    SUDO_ENABLE: "false"
     # dolphinscheduler env
     HADOOP_HOME: "/opt/soft/hadoop"
     HADOOP_CONF_DIR: "/opt/soft/hadoop/etc/hadoop"
