@@ -64,3 +64,4 @@ build/
 # Test coverage
 .coverage
 htmlcov/
+.fastRequest
