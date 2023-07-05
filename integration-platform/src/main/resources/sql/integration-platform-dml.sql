@@ -14,9 +14,9 @@ VALUES ('任务类型', 1, NULL, NULL, '2023-06-27 11:10:29', NULL, '2023-06-27 
 
 # dnd 组件注册
 INSERT INTO `t_dsx_dnd_registry` (KEY_ID, NAME, SORT, REMARK, CREATE_TIME, UPDATE_TIME, CREATED_BY, UPDATED_BY)
-VALUES ('DSTask', '海豚任务', 1, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', NULL, NULL),
+VALUES ('DSTask', '海豚任务插件', 1, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', NULL, NULL),
        ('DataXPlugin', 'DataX插件', 2, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', NULL, NULL),
-       ('DataXPlugin', '库级同步插件', 3, 'KEY_ID 复用 DataXPlugin，需前端提供相应插件名称后更新', '2023-06-27 11:10:51', '2023-06-27 11:10:51', NULL, NULL);
+       ('DBPlugin', '数据库插件', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', NULL, NULL);
 
 # 任务类型组件初始化
 
@@ -47,7 +47,7 @@ VALUES ('SHELL', 1, 'shell', NULL, NULL, 1, NULL, '2023-06-27 11:10:51', '2023-0
        ('码表查询', 3, 'dict', NULL, '{"supports": 4, "targetRenderKey": ["DSTask"], "defaultPluginType": "transformer"}', 2, NULL, '2023-06-27 11:10:52', '2023-06-27 11:10:52', 0, NULL, 4, NULL),
        ('增加字段', 3, 'field-add', NULL, '{"supports": 4, "targetRenderKey": ["DSTask"], "defaultPluginType": "transformer"}', 2, NULL, '2023-06-27 11:10:52', '2023-06-27 11:10:52', 0, NULL, 1, NULL),
        ('数据校验', 3, 'data-check', NULL, '{"supports": 4, "targetRenderKey": ["DSTask"], "defaultPluginType": "transformer"}', 2, NULL, '2023-06-27 11:10:52', '2023-06-27 11:10:52', 0, NULL, 2, NULL),
-       ('MySQL', 4, 'mysql', NULL, '{"supports": 3, "hiddenLabel": false, "targetRenderKey": ["DSTask"], "defaultPluginType": "reader"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 1, NULL),
-       ('Oracle', 4, NULL, NULL, '{"supports": 1, "targetRenderKey": ["DSTask"], "defaultPluginType": "reader"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 2, NULL),
-       ('Hive', 4, 'hive', NULL, '{"supports": 2, "targetRenderKey": ["DSTask"], "defaultPluginType": "writer"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 3, NULL);
+       ('MySQL', 4, 'mysql', NULL, '{"supports": 3, "defaultPluginType": "reader"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 1, NULL),
+       ('Oracle', 4, NULL, NULL, '{"supports": 1, "defaultPluginType": "reader"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 2, NULL),
+       ('Hive', 4, 'hive', NULL, '{"supports": 2, "defaultPluginType": "writer"}', 3, NULL, '2023-06-27 11:10:51', '2023-06-27 11:10:51', 0, NULL, 3, NULL);
 
