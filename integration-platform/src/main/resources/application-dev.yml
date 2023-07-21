@@ -7,8 +7,8 @@ spring:
     password: redis!@@&
     database: 8
   datasource:
-    url: jdbc:mysql://10.1.150.150:51328/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: zhmz
-    password: jqkj5350**)
+    url: jdbc:mysql://10.1.150.150:30782/dolphinscheduler?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: ds
+    password: ds
 swagger:
   enabled: true

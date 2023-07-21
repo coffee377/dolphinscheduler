@@ -141,6 +141,11 @@ public class TaskInstance implements Serializable {
     @TableField(exist = false)
     private String projectName;
 
+    private Integer executorId;
+
+    @TableField(exist = false)
+    private String executorName;
+
 
 
 
