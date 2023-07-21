@@ -197,21 +197,21 @@ public class PythonGateway {
      * If process definition do not exists in Project=`projectCode` would create a new one
      * If process definition already exists in Project=`projectCode` would update it
      *
-     * @param userName user name who create or update process definition
-     * @param projectName project name which process definition belongs to
-     * @param name process definition name
-     * @param description description
-     * @param globalParams global params
-     * @param schedule schedule for process definition, will not set schedule if null,
-     * and if would always fresh exists schedule if not null
-     * @param warningType warning type
-     * @param warningGroupId warning group id
-     * @param locations locations json object about all tasks
-     * @param timeout timeout for process definition working, if running time longer than timeout,
-     * task will mark as fail
-     * @param workerGroup run task in which worker group
-     * @param tenantCode tenantCode
-     * @param taskRelationJson relation json for nodes
+     * @param userName           user name who create or update process definition
+     * @param projectName        project name which process definition belongs to
+     * @param name               process definition name
+     * @param description        description
+     * @param globalParams       global params
+     * @param schedule           schedule for process definition, will not set schedule if null,
+     *                           and if would always fresh exists schedule if not null
+     * @param warningType        warning type
+     * @param warningGroupId     warning group id
+     * @param locations          locations json object about all tasks
+     * @param timeout            timeout for process definition working, if running time longer than timeout,
+     *                           task will mark as fail
+     * @param workerGroup        run task in which worker group
+     * @param tenantCode         tenantCode
+     * @param taskRelationJson   relation json for nodes
      * @param taskDefinitionJson taskDefinitionJson
      * @return create result code
      */
@@ -251,7 +251,7 @@ public class PythonGateway {
             processDefinitionCode = processDefinition.getCode();
         }
 
-        // Fresh process definition schedule 
+        // Fresh process definition schedule
         if (schedule != null) {
             createOrUpdateSchedule(user, projectCode, processDefinitionCode, schedule, workerGroup, warningType, warningGroupId);
         }
@@ -262,8 +262,8 @@ public class PythonGateway {
     /**
      * get process definition
      *
-     * @param user user who create or update schedule
-     * @param projectCode project which process definition belongs to
+     * @param user                  user who create or update schedule
+     * @param projectCode           project which process definition belongs to
      * @param processDefinitionName process definition name
      */
     private ProcessDefinition getProcessDefinition(User user, long projectCode, String processDefinitionName) {
@@ -287,13 +287,13 @@ public class PythonGateway {
      * It would always use latest schedule define in workflow-as-code, and set schedule online when
      * it's not null
      *
-     * @param user user who create or update schedule
-     * @param projectCode project which process definition belongs to
+     * @param user                  user who create or update schedule
+     * @param projectCode           project which process definition belongs to
      * @param processDefinitionCode process definition code
-     * @param schedule schedule expression
-     * @param workerGroup work group
-     * @param warningType warning type
-     * @param warningGroupId warning group id
+     * @param schedule              schedule expression
+     * @param workerGroup           work group
+     * @param warningType           warning type
+     * @param warningGroupId        warning group id
      */
     private void createOrUpdateSchedule(User user,
                                         long projectCode,
@@ -407,7 +407,7 @@ public class PythonGateway {
         if (Objects.isNull(user)) {
             Map<String, Object> tenantResult = tenantService.queryByTenantCode(tenantCode);
             Tenant tenant = (Tenant) tenantResult.get(Constants.DATA_LIST);
-            usersService.createUser(userName, userPassword, email, tenant.getId(), phone, queue, state);
+            usersService.createUser(userName, userPassword, email, tenant.getId(), phone, queue, state, null);
         }
     }
 
@@ -441,8 +441,8 @@ public class PythonGateway {
      * Get processDefinition by given processDefinitionName name. It return map contain processDefinition id, name, code.
      * Useful in Python API create subProcess task which need processDefinition information.
      *
-     * @param userName user who create or update schedule
-     * @param projectName project name which process definition belongs to
+     * @param userName              user who create or update schedule
+     * @param projectName           project name which process definition belongs to
      * @param processDefinitionName process definition name
      */
     public Map<String, Object> getProcessDefinitionInfo(String userName, String projectName, String processDefinitionName) {
@@ -472,9 +472,9 @@ public class PythonGateway {
      * Get project, process definition, task code.
      * Useful in Python API create dependent task which need processDefinition information.
      *
-     * @param projectName project name which process definition belongs to
+     * @param projectName           project name which process definition belongs to
      * @param processDefinitionName process definition name
-     * @param taskName task name
+     * @param taskName              task name
      */
     public Map<String, Object> getDependentInfo(String projectName, String processDefinitionName, String taskName) {
         Map<String, Object> result = new HashMap<>();
@@ -508,7 +508,7 @@ public class PythonGateway {
      * Useful in Python API create flink or spark task which need processDefinition information.
      *
      * @param programType program type one of SCALA, JAVA and PYTHON
-     * @param fullName full name of the resource
+     * @param fullName    full name of the resource
      */
     public Map<String, Object> getResourcesFileInfo(String programType, String fullName) {
         Map<String, Object> result = new HashMap<>();
@@ -553,9 +553,9 @@ public class PythonGateway {
      * create or update resource.
      * If the folder is not already created, it will be
      *
-     * @param userName user who create or update resource
-     * @param fullName The fullname of resource.Includes path and suffix.
-     * @param description description of resource
+     * @param userName        user who create or update resource
+     * @param fullName        The fullname of resource.Includes path and suffix.
+     * @param description     description of resource
      * @param resourceContent content of resource
      * @return id of resource
      */
@@ -577,14 +577,14 @@ public class PythonGateway {
             InetAddress gatewayHost = InetAddress.getByName(pythonGatewayConfiguration.getGatewayServerAddress());
             InetAddress pythonHost = InetAddress.getByName(pythonGatewayConfiguration.getPythonAddress());
             server = new GatewayServer(
-                this,
-                pythonGatewayConfiguration.getGatewayServerPort(),
-                pythonGatewayConfiguration.getPythonPort(),
-                gatewayHost,
-                pythonHost,
-                pythonGatewayConfiguration.getConnectTimeout(),
-                pythonGatewayConfiguration.getReadTimeout(),
-                null
+                    this,
+                    pythonGatewayConfiguration.getGatewayServerPort(),
+                    pythonGatewayConfiguration.getPythonPort(),
+                    gatewayHost,
+                    pythonHost,
+                    pythonGatewayConfiguration.getConnectTimeout(),
+                    pythonGatewayConfiguration.getReadTimeout(),
+                    null
             );
             GatewayServer.turnLoggingOn();
             logger.info("PythonGatewayService started on: " + gatewayHost.toString());

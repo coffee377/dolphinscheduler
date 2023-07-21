@@ -18,20 +18,18 @@ public class DsxDhdComponentBO extends BaseQueryParams implements Serializable {
     @ApiModelProperty("主键id")
     private int id;
 
-    @NotBlank(message = "组件名称不能为空", groups = {ValidationGroups.Insert.class,ValidationGroups.Update.class})
-    @ApiModelProperty(value = "组件名称",required = true)
+    @NotBlank(message = "组件名称不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
+    @ApiModelProperty(value = "组件名称", required = true)
     private String name;
-
-
-    @NotBlank(message = "组件类型不能为空", groups = {ValidationGroups.Insert.class,ValidationGroups.Update.class})
-    @ApiModelProperty(value = "组件类型",required = true)
-    private String type;
 
     @ApiModelProperty(value = "组件图标")
     private String icon;
 
-    @NotNull(message = "分类ID不能为空", groups = {ValidationGroups.Insert.class,ValidationGroups.Update.class})
-    @ApiModelProperty(value = "分类ID",required = true)
+    @ApiModelProperty(value = "图标类型")
+    private String type;
+
+    @NotNull(message = "分类ID不能为空", groups = {ValidationGroups.Insert.class, ValidationGroups.Update.class})
+    @ApiModelProperty(value = "分类ID", required = true)
     private Integer cid;
 
     @ApiModelProperty(value = "配置参数")
@@ -46,6 +44,4 @@ public class DsxDhdComponentBO extends BaseQueryParams implements Serializable {
 
     @ApiModelProperty(value = "描述")
     private String description;
-
-    
 }

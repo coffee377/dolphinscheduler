@@ -15,7 +15,7 @@
   </scm>
     <groupId>net.jqsoft</groupId>
     <artifactId>integration-platform</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>integration-platform</name>
     <description>integration-platform</description>
     <properties>
