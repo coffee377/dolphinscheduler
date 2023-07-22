@@ -65,15 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -145,7 +137,8 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
                                           int tenantId,
                                           String phone,
                                           String queue,
-                                          int state) throws Exception {
+                                          int state,
+                                          UserType userType) throws Exception {
         Map<String, Object> result = new HashMap<>();
 
         //check all user params
@@ -165,7 +158,7 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
             return result;
         }
 
-        User user = createUser(userName, userPassword, email, tenantId, phone, queue, state);
+        User user = createUser(userName, userPassword, email, tenantId, phone, queue, state, userType);
 
         Tenant tenant = tenantMapper.queryById(tenantId);
         // resource upload startup
@@ -188,7 +181,8 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
                            int tenantId,
                            String phone,
                            String queue,
-                           int state) {
+                           int state,
+                           UserType userType) {
         User user = new User();
         Date now = new Date();
 
@@ -199,7 +193,7 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
         user.setPhone(phone);
         user.setState(state);
         // create general users, administrator users are currently built-in
-        user.setUserType(UserType.GENERAL_USER);
+        user.setUserType(Optional.ofNullable(userType).orElse(UserType.GENERAL_USER));
         user.setCreateTime(now);
         user.setUpdateTime(now);
         if (StringUtils.isEmpty(queue)) {
@@ -347,6 +341,7 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
      * @param userId       user id
      * @param userName     user name
      * @param userPassword user password
+     * @param userType     user type
      * @param email        email
      * @param tenantId     tenant id
      * @param phone        phone
@@ -365,7 +360,8 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
                                           String phone,
                                           String queue,
                                           int state,
-                                          String timeZone) throws IOException {
+                                          String timeZone,
+                                          UserType userType) throws IOException {
         Map<String, Object> result = new HashMap<>();
         result.put(Constants.STATUS, false);
 
@@ -399,6 +395,9 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
             }
             user.setUserPassword(EncryptionUtils.getMd5(userPassword));
         }
+
+        // 更新用户类型
+        user.setUserType(Optional.of(userType).orElse(UserType.GENERAL_USER));
 
         if (StringUtils.isNotEmpty(email)) {
             if (!CheckUtils.checkEmail(email)) {
@@ -1159,7 +1158,7 @@ public class UsersServiceImpl extends BaseServiceImpl implements UsersService {
             putMsg(result, Status.REQUEST_PARAMS_NOT_VALID_ERROR, "two passwords are not same");
             return result;
         }
-        User user = createUser(userName, userPassword, email, 1, "", "", Flag.NO.ordinal());
+        User user = createUser(userName, userPassword, email, 1, "", "", Flag.NO.ordinal(), UserType.GENERAL_USER);
         putMsg(result, Status.SUCCESS);
         result.put(Constants.DATA_LIST, user);
         return result;
